@@ -1,0 +1,3 @@
+# 🚀 Elimu AI v0.2 Roadmap
+
+**Status**: Moving from Scaffolding...
