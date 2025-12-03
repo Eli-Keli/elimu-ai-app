@@ -1,25 +1,63 @@
+import { GoogleGenAI } from '@google/genai';
 import { AIProcessingError, AIProcessingErrorType } from '../types';
 
 /**
  * Configuration for Gemini API
- * TODO: Move to environment variables
  */
 interface GeminiConfig {
-  apiKey?: string;
   model: string;
   temperature?: number;
-  maxTokens?: number;
+  maxOutputTokens?: number;
+  topP?: number;
+  topK?: number;
+}
+
+/**
+ * Available Gemini models
+ */
+export enum GeminiModel {
+  FLASH_2_5 = 'gemini-2.5-flash',
+  PRO_2_5 = 'gemini-2.5-pro',
+  PRO_3_0 = 'gemini-3-pro-preview'
 }
 
 const DEFAULT_CONFIG: GeminiConfig = {
-  model: 'gemini-2.5-flash',
+  model: GeminiModel.FLASH_2_5,
   temperature: 0.7,
-  maxTokens: 2048
+  maxOutputTokens: 2048,
+  topP: 0.95,
+  topK: 40
 };
 
 /**
+ * Singleton Gemini AI client instance
+ */
+let geminiClient: GoogleGenAI | null = null;
+
+/**
+ * Initialize Gemini client with API key
+ * API key is automatically picked up from GEMINI_API_KEY or EXPO_PUBLIC_GEMINI_API_KEY environment variable
+ */
+function getGeminiClient(): GoogleGenAI {
+  if (!geminiClient) {
+    const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      throw new AIProcessingError(
+        AIProcessingErrorType.API_KEY_ERROR,
+        'Gemini API key not configured. Please set EXPO_PUBLIC_GEMINI_API_KEY in your .env file'
+      );
+    }
+
+    geminiClient = new GoogleGenAI({ apiKey });
+    console.log('[Gemini] Client initialized successfully');
+  }
+
+  return geminiClient;
+}
+
+/**
  * Generates content using Google's Gemini AI model
- * Currently stubbed - implement with actual Gemini API in production/testing
  * 
  * @param prompt - The prompt to send to Gemini
  * @param config - Optional configuration overrides
@@ -42,50 +80,28 @@ export async function generateGeminiContent(
     }
 
     const finalConfig = { ...DEFAULT_CONFIG, ...config };
+    const client = getGeminiClient();
 
-    // TODO: Real implementation checklist
-    // [ ] Install @google/genai package
-    // [ ] Store API key in .env and load with expo-constants
-    // [ ] Initialize Gemini client with API key
-    // [ ] Handle rate limiting and retries
-    // [ ] Implement streaming responses for better UX
-    // [ ] Add token counting and cost tracking
-    // [ ] Cache responses for identical prompts
-    // [ ] Handle safety filters and blocked content
+    console.log('[Gemini] Using model:', finalConfig.model);
 
-    // Example real implementation:
-    // See docs at https://ai.google.dev/gemini-api/docs/quickstart#javascript
+    // Make API call
+    const response = await client.models.generateContent({
+      model: finalConfig.model,
+      contents: prompt
+    });
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Extract text from response
+    const text = response.text;
 
-    // Mock response based on prompt type
-    let mockResponse = '';
-
-    if (prompt.includes('Simplify')) {
-      mockResponse = `Learning about React Native and TypeScript is important for making mobile apps today.
-
-It helps developers create apps that work on both iPhone and Android using one set of code.
-
-Important ideas to know:
-• Building apps with components (like building blocks)
-• Managing data in your app
-• Moving between different screens
-• Making your app run fast`;
-    } else if (prompt.includes('visual')) {
-      mockResponse = JSON.stringify([
-        {
-          type: 'diagram',
-          description: 'Component lifecycle visualization',
-          altText: 'Flow showing how React components are created, updated, and removed'
-        }
-      ]);
-    } else {
-      mockResponse = `This is a mock response from Gemini for the prompt: "${prompt.substring(0, 50)}..."`;
+    if (!text) {
+      throw new AIProcessingError(
+        AIProcessingErrorType.PROCESSING_FAILED,
+        'Gemini API returned empty response'
+      );
     }
 
-    console.log('[Gemini] Generated response length:', mockResponse.length);
-    return mockResponse;
+    console.log('[Gemini] Generated response length:', text.length);
+    return text;
 
   } catch (error) {
     console.error('[Gemini] Content generation failed:', error);
@@ -94,10 +110,73 @@ Important ideas to know:
       throw error;
     }
 
+    // Handle specific API errors
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    if (errorMessage.includes('API key')) {
+      throw new AIProcessingError(
+        AIProcessingErrorType.API_KEY_ERROR,
+        'Invalid or missing Gemini API key',
+        error as Error
+      );
+    }
+
+    if (errorMessage.includes('quota') || errorMessage.includes('rate limit')) {
+      throw new AIProcessingError(
+        AIProcessingErrorType.RATE_LIMITED,
+        'Gemini API rate limit exceeded. Please try again later.',
+        error as Error
+      );
+    }
+
     throw new AIProcessingError(
       AIProcessingErrorType.NETWORK_ERROR,
       'Failed to generate content with Gemini API',
       error as Error
     );
   }
+}
+
+/**
+ * Generate content with retry logic
+ * Useful for handling transient network errors
+ */
+export async function generateGeminiContentWithRetry(
+  prompt: string,
+  config: Partial<GeminiConfig> = {},
+  maxRetries: number = 3
+): Promise<string> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`[Gemini] Attempt ${attempt}/${maxRetries}`);
+      return await generateGeminiContent(prompt, config);
+    } catch (error) {
+      lastError = error as Error;
+      
+      // Don't retry on certain errors
+      if (error instanceof AIProcessingError) {
+        if (
+          error.type === AIProcessingErrorType.API_KEY_ERROR ||
+          error.type === AIProcessingErrorType.INVALID_INPUT
+        ) {
+          throw error;
+        }
+      }
+
+      if (attempt < maxRetries) {
+        // Exponential backoff
+        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
+        console.log(`[Gemini] Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw new AIProcessingError(
+    AIProcessingErrorType.PROCESSING_FAILED,
+    `Failed after ${maxRetries} attempts`,
+    lastError!
+  );
 }
