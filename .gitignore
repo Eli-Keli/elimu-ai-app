@@ -36,6 +36,9 @@ yarn-error.*
 .env.development
 .env.production
 
+# private developer notes
+DEVELOPER_NOTES.md
+
 # typescript
 *.tsbuildinfo
 
