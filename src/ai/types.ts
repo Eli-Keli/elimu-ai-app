@@ -124,3 +124,44 @@ export class AIProcessingError extends Error {
         this.name = 'AIProcessingError';
     }
 }
+
+
+
+
+/**
+ * Configuration for Gemini API
+ */
+export interface GeminiConfig {
+  model: string;
+  temperature?: number;
+  maxOutputTokens?: number;
+  topP?: number;
+  topK?: number;
+}
+
+/**
+ * File data for multimodal requests
+ */
+export interface FileData {
+  data: Uint8Array;
+  mimeType: string;
+}
+
+/**
+ * Options for generating content with retry
+ */
+export interface GenerateContentOptions {
+  prompt: string;
+  fileData?: FileData;
+  config?: Partial<GeminiConfig>;
+  maxRetries?: number;
+}
+
+/**
+ * Available Gemini models
+ */
+export enum GeminiModel {
+  FLASH_2_5 = 'gemini-2.5-flash',
+  PRO_2_5 = 'gemini-2.5-pro',
+  PRO_3_0 = 'gemini-3-pro-preview'
+}

@@ -9,7 +9,8 @@
 
 // Load environment variables
 import 'dotenv/config';
-import { generateGeminiContent, generateGeminiContentWithRetry, GeminiModel } from './src/ai/models/gemini';
+import { generateGeminiContent, generateGeminiContentWithRetry } from './src/ai/models/gemini';
+import { GeminiModel } from './src/ai/types';
 import { simplifyContent } from './src/ai/adapt/simplifyText';
 
 const TEST_TEXT = `React Native is a popular open-source framework for building mobile applications using JavaScript and React. It allows developers to create cross-platform apps that run on both iOS and Android devices using a single codebase. React Native utilizes native components, ensuring that applications have a native look and feel while benefiting from the efficiency of JavaScript development.`;

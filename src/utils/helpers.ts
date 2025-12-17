@@ -153,3 +153,16 @@ export function isGeminiConfigured(): boolean {
     // TODO: Check for actual API key in environment
     return false;
 }
+
+/**
+ * Converts Uint8Array to base64 string (React Native compatible)
+ * Buffer is not available in React Native, so we use native encoding
+ */
+export function uint8ArrayToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}

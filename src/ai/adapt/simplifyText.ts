@@ -1,5 +1,5 @@
-import { SimplificationResult, AIProcessingError, AIProcessingErrorType } from '../types';
-import { generateGeminiContent, generateGeminiContentWithRetry, GeminiModel } from '../models/gemini';
+import { SimplificationResult, AIProcessingError, AIProcessingErrorType, GeminiModel } from '../types';
+import { generateGeminiContent, generateGeminiContentWithRetry } from '../models/gemini';
 
 /**
  * Simplifies complex text into more accessible language

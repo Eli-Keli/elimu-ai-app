@@ -1,56 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
-import { AIProcessingError, AIProcessingErrorType } from '../types';
-
-/**
- * Converts Uint8Array to base64 string (React Native compatible)
- * Buffer is not available in React Native, so we use native encoding
- */
-function uint8ArrayToBase64(bytes: Uint8Array): string {
-  let binary = '';
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-
-/**
- * Configuration for Gemini API
- */
-export interface GeminiConfig {
-  model: string;
-  temperature?: number;
-  maxOutputTokens?: number;
-  topP?: number;
-  topK?: number;
-}
-
-/**
- * File data for multimodal requests
- */
-export interface FileData {
-  data: Uint8Array;
-  mimeType: string;
-}
-
-/**
- * Options for generating content with retry
- */
-export interface GenerateContentOptions {
-  prompt: string;
-  fileData?: FileData;
-  config?: Partial<GeminiConfig>;
-  maxRetries?: number;
-}
-
-/**
- * Available Gemini models
- */
-export enum GeminiModel {
-  FLASH_2_5 = 'gemini-2.5-flash',
-  PRO_2_5 = 'gemini-2.5-pro',
-  PRO_3_0 = 'gemini-3-pro-preview'
-}
+import { AIProcessingError, AIProcessingErrorType, GeminiModel, GeminiConfig, FileData, GenerateContentOptions } from '../types';
+import { uint8ArrayToBase64 } from '../../utils/helpers';
 
 const DEFAULT_CONFIG: GeminiConfig = {
   model: GeminiModel.FLASH_2_5,

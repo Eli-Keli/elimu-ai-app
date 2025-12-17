@@ -1,5 +1,5 @@
-import { VisualAidsResult, VisualAid, AIProcessingError, AIProcessingErrorType } from '../types';
-import { generateGeminiContent, generateGeminiContentWithRetry, GeminiModel } from '../models/gemini';
+import { VisualAidsResult, VisualAid, AIProcessingError, AIProcessingErrorType, GeminiModel } from '../types';
+import { generateGeminiContent, generateGeminiContentWithRetry } from '../models/gemini';
 import { GoogleGenAI } from '@google/genai';
 
 /**
