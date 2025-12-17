@@ -8,13 +8,16 @@
 
 ## Key Features
 
-*   **Smart Document Processing**
-    *   Upload PDFs or images (Lecture notes, textbooks, handouts).
-    *   Extract raw text for processing.
-*   **Adaptive AI Pipeline** (Current: Scaffolding/Stubs)
-    *   **Simplify:** Converts complex academic language into plain, easy-to-understand text.
-    *   **Audify:** Generates audio narrations for visual impairment support.
-    *   **Visualize:** Creates descriptions for visual learning aids (infographics, timelines).
+*   **Smart Document Processing** ✅
+    *   Upload PDFs or images (Lecture notes, textbooks, handouts)
+    *   Real text extraction powered by Gemini multimodal API
+    *   Automatic OCR for scanned documents and images
+    *   Supports PDF, JPG, PNG, WebP, HEIC, HEIF formats (up to 50MB)
+*   **Adaptive AI Pipeline**
+    *   **Extract:** ✅ Real text extraction from documents using Gemini multimodal API with automatic OCR
+    *   **Simplify:** ✅ Converts complex academic language into plain, easy-to-understand text
+    *   **Audify:** 🚧 Generates audio narrations for visual impairment support (Phase 4)
+    *   **Visualize:** ✅ Creates descriptions for visual learning aids (infographics, timelines)
 *   **Accessibility First**
     *   High-contrast UI foundation.
     *   Screen-reader optimized structure.
@@ -61,14 +64,14 @@ elimu-ai-app/
 
 The core of Elimu AI is the `src/ai` module, which orchestrates the transformation of content.
 
-**Current Status:** *Scaffolding & Stubs (v0.1)*
+**Current Status:** *Phase 2 Complete - Real Document Processing (v0.2)*
 
 1.  **Orchestration (`src/ai/index.ts`)**
     *   The `processDocument(uri)` function serves as the main entry point.
     *   It manages the flow of data between extraction, adaptation, and generation steps.
 
-2.  **Extraction (`src/ai/extract/`)**
-    *   `extractText.ts`: Handles OCR and text parsing from local file URIs.
+2.  **Extraction (`src/ai/extract/`)** ✅ **PRODUCTION-READY**
+    *   `extractText.ts`: Real text extraction using Gemini multimodal API with automatic OCR support for PDFs and images.
 
 3.  **Adaptation (`src/ai/adapt/`)**
     *   `simplifyText.ts`: Rewrites content for cognitive accessibility.
@@ -134,6 +137,9 @@ The core of Elimu AI is the `src/ai` module, which orchestrates the transformati
 - **[QUICK_REFERENCE.md](docs/QUICK_REFERENCE.md)** - Developer quick reference guide
 - **[ANALYSIS_SUMMARY.md](docs/ANALYSIS_SUMMARY.md)** - Project analysis and improvements summary
 - **[DEPENDENCIES.md](docs/DEPENDENCIES.md)** - Official packages and documentation links
+- **[PHASE_2_PLANNING.md](docs/PHASE_2_PLANNING.md)** - Phase 2 decision analysis (Gemini vs native libraries)
+- **[PHASE_2_IMPLEMENTATION.md](docs/PHASE_2_IMPLEMENTATION.md)** - Phase 2 completion report and test results
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Step-by-step testing instructions
 
 ---
 
@@ -157,16 +163,19 @@ The core of Elimu AI is the `src/ai` module, which orchestrates the transformati
 *   [x] Text simplification with Gemini 2.5 Flash
 *   [x] Image generation with Gemini Nano Banana
 *   [x] Comprehensive error handling and logging
-*   [ ] **Phase 2 (Next)**: Implement real text extraction from PDFs with native modules
-*   [ ] **Phase 3**: Generate actual simplified summaries end-to-end
-*   [ ] **Phase 4**: Add audio generation with expo-speech
+*   [x] **Phase 2 Complete**: Real PDF/image text extraction with Gemini multimodal API
+*   [x] OCR support for scanned documents and images
+*   [x] Support for PDF, JPG, PNG, WebP, HEIC, HEIF formats
+*   [x] React Native compatible implementation (works on Expo Go)
+*   [ ] **Phase 4 (Next)**: Add audio generation with expo-speech
 *   [ ] **Phase 5**: Complete image generation pipeline
 *   [ ] **Phase 6**: Implement save and share functionality
 *   [ ] **Phase 7**: Full integration testing
 *   [ ] **Phase 8**: Polish and documentation
 
 **See [`docs/ROADMAP_V0.2.md`](docs/ROADMAP_V0.2.md) for detailed implementation plan.**  
-**See [`docs/PHASE_1_COMPLETE.md`](docs/PHASE_1_COMPLETE.md) for Phase 1 completion report.**
+**See [`docs/PHASE_1_COMPLETE.md`](docs/PHASE_1_COMPLETE.md) for Phase 1 completion report.**  
+**See [`docs/PHASE_2_IMPLEMENTATION.md`](docs/PHASE_2_IMPLEMENTATION.md) for Phase 2 completion report.**
 
 ### Phase D: Ecosystem Integration
 *   [ ] Align UI with AbiliLife design system.
