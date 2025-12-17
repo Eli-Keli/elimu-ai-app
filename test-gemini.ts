@@ -31,10 +31,11 @@ async function testGeminiAPI() {
     // Test 2: Content generation with retry
     console.log('\n✅ Test 2: Content Generation with Retry');
     console.log('-'.repeat(60));
-    const response2 = await generateGeminiContentWithRetry(
-      'List 3 benefits of using React Native in bullet points.',
-      { model: GeminiModel.FLASH_2_5 }
-    );
+    const response2 = await generateGeminiContentWithRetry({
+      prompt: 'List 3 benefits of using React Native in bullet points.',
+      config: { model: GeminiModel.FLASH_2_5 },
+      maxRetries: 3,
+    });
     console.log('Response:', response2);
 
     // Test 3: Text simplification

@@ -37,10 +37,14 @@ Text to simplify:
 Provide the simplified version only, without explanations.`;
 
     // Call Gemini API with retry logic for reliability
-    const simplifiedText = await generateGeminiContentWithRetry(prompt, {
-      model: GeminiModel.FLASH_2_5, // Fast and cost-effective for text simplification
-      temperature: 0.7, // Balanced creativity and accuracy
-      maxOutputTokens: Math.min(text.length * 2, 4096) // Allow up to 2x original length
+    const simplifiedText = await generateGeminiContentWithRetry({
+      prompt,
+      config: {
+        model: GeminiModel.FLASH_2_5, // Fast and cost-effective for text simplification
+        temperature: 0.7, // Balanced creativity and accuracy
+        maxOutputTokens: Math.min(text.length * 2, 4096) // Allow up to 2x original length
+      },
+      maxRetries: 3,
     });
 
     const result: SimplificationResult = {

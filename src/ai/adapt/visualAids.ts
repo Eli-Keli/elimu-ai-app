@@ -25,9 +25,13 @@ Respond ONLY with a JSON array like this:
   }
 ]`;
 
-  const response = await generateGeminiContentWithRetry(prompt, {
-    model: GeminiModel.FLASH_2_5,
-    temperature: 0.8 // Higher creativity for visual suggestions
+  const response = await generateGeminiContentWithRetry({
+    prompt,
+    config: {
+      model: GeminiModel.FLASH_2_5,
+      temperature: 0.8 // Higher creativity for visual suggestions
+    },
+    maxRetries: 3,
   });
 
   try {

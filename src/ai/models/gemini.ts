@@ -2,14 +2,45 @@ import { GoogleGenAI } from '@google/genai';
 import { AIProcessingError, AIProcessingErrorType } from '../types';
 
 /**
+ * Converts Uint8Array to base64 string (React Native compatible)
+ * Buffer is not available in React Native, so we use native encoding
+ */
+function uint8ArrayToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+/**
  * Configuration for Gemini API
  */
-interface GeminiConfig {
+export interface GeminiConfig {
   model: string;
   temperature?: number;
   maxOutputTokens?: number;
   topP?: number;
   topK?: number;
+}
+
+/**
+ * File data for multimodal requests
+ */
+export interface FileData {
+  data: Uint8Array;
+  mimeType: string;
+}
+
+/**
+ * Options for generating content with retry
+ */
+export interface GenerateContentOptions {
+  prompt: string;
+  fileData?: FileData;
+  config?: Partial<GeminiConfig>;
+  maxRetries?: number;
 }
 
 /**
@@ -61,14 +92,22 @@ function getGeminiClient(): GoogleGenAI {
  * 
  * @param prompt - The prompt to send to Gemini
  * @param config - Optional configuration overrides
+ * @param fileData - Optional file data for multimodal requests (PDFs, images)
  * @returns Promise resolving to generated text
  * @throws AIProcessingError if API call fails
  */
 export async function generateGeminiContent(
   prompt: string,
-  config: Partial<GeminiConfig> = {}
+  config: Partial<GeminiConfig> = {},
+  fileData?: FileData
 ): Promise<string> {
   console.log('[Gemini] Generating content. Prompt length:', prompt.length);
+  if (fileData) {
+    console.log('[Gemini] Including file data:', {
+      mimeType: fileData.mimeType,
+      size: `${(fileData.data.length / 1024).toFixed(2)} KB`
+    });
+  }
 
   try {
     // Validate input
@@ -84,10 +123,23 @@ export async function generateGeminiContent(
 
     console.log('[Gemini] Using model:', finalConfig.model);
 
+    // Build contents array
+    const contents: any[] = fileData 
+      ? [
+          {
+            inlineData: {
+              data: uint8ArrayToBase64(fileData.data),
+              mimeType: fileData.mimeType,
+            },
+          },
+          prompt,
+        ]
+      : [prompt];
+
     // Make API call
     const response = await client.models.generateContent({
       model: finalConfig.model,
-      contents: prompt
+      contents,
     });
 
     // Extract text from response
@@ -140,18 +192,18 @@ export async function generateGeminiContent(
 /**
  * Generate content with retry logic
  * Useful for handling transient network errors
+ * Supports both text-only and multimodal (file) requests
  */
 export async function generateGeminiContentWithRetry(
-  prompt: string,
-  config: Partial<GeminiConfig> = {},
-  maxRetries: number = 3
+  options: GenerateContentOptions
 ): Promise<string> {
+  const { prompt, fileData, config = {}, maxRetries = 3 } = options;
   let lastError: Error | null = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`[Gemini] Attempt ${attempt}/${maxRetries}`);
-      return await generateGeminiContent(prompt, config);
+      return await generateGeminiContent(prompt, config, fileData);
     } catch (error) {
       lastError = error as Error;
       

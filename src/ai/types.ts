@@ -30,6 +30,13 @@ export interface ExtractionResult {
     pageCount?: number;
     confidence?: number; // OCR confidence score (0-1)
     language?: string;
+    metadata?: {
+        fileName?: string;
+        fileSize?: number;
+        mimeType?: string;
+        extractionMethod?: 'gemini-multimodal' | 'ocr' | 'native' | 'hybrid';
+        geminiFileId?: string; // For Files API large file uploads
+    };
 }
 
 /**
