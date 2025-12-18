@@ -16,7 +16,7 @@
 *   **Adaptive AI Pipeline**
     *   **Extract:** ✅ Real text extraction from documents using Gemini multimodal API with automatic OCR
     *   **Simplify:** ✅ Converts complex academic language into plain, easy-to-understand text
-    *   **Audify:** 🚧 Generates audio narrations for visual impairment support (Phase 4)
+    *   **Audify:** ✅ Real TTS audio playback with voice selection and speed control (expo-speech)
     *   **Visualize:** ✅ Creates descriptions for visual learning aids (infographics, timelines)
 *   **Accessibility First**
     *   High-contrast UI foundation.
@@ -64,7 +64,7 @@ elimu-ai-app/
 
 The core of Elimu AI is the `src/ai` module, which orchestrates the transformation of content.
 
-**Current Status:** *Phase 2 Complete - Real Document Processing (v0.2)*
+**Current Status:** *Phase 3 Complete - Real Audio Playback (v0.2)*
 
 1.  **Orchestration (`src/ai/index.ts`)**
     *   The `processDocument(uri)` function serves as the main entry point.
@@ -72,6 +72,11 @@ The core of Elimu AI is the `src/ai` module, which orchestrates the transformati
 
 2.  **Extraction (`src/ai/extract/`)** ✅ **PRODUCTION-READY**
     *   `extractText.ts`: Real text extraction using Gemini multimodal API with automatic OCR support for PDFs and images.
+
+3.  **Adaptation (`src/ai/adapt/`)** ✅ **PRODUCTION-READY**
+    *   `simplifyText.ts`: Real text simplification using Gemini 2.5 Flash model.
+    *   `audioConvert.ts`: Real TTS audio playback using expo-speech with voice selection and speed control.
+    *   `visualAids.ts`: Real visual aids generation using Gemini API.
 
 3.  **Adaptation (`src/ai/adapt/`)**
     *   `simplifyText.ts`: Rewrites content for cognitive accessibility.
@@ -139,6 +144,8 @@ The core of Elimu AI is the `src/ai` module, which orchestrates the transformati
 - **[DEPENDENCIES.md](docs/DEPENDENCIES.md)** - Official packages and documentation links
 - **[PHASE_2_PLANNING.md](docs/PHASE_2_PLANNING.md)** - Phase 2 decision analysis (Gemini vs native libraries)
 - **[PHASE_2_IMPLEMENTATION.md](docs/PHASE_2_IMPLEMENTATION.md)** - Phase 2 completion report and test results
+- **[PHASE_3_PLANNING.md](docs/PHASE_3_PLANNING.md)** - Phase 3 decision analysis (expo-speech TTS)
+- **[PHASE_3_IMPLEMENTATION.md](docs/PHASE_3_IMPLEMENTATION.md)** - Phase 3 completion report and test results
 - **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Step-by-step testing instructions
 
 ---
@@ -167,15 +174,20 @@ The core of Elimu AI is the `src/ai` module, which orchestrates the transformati
 *   [x] OCR support for scanned documents and images
 *   [x] Support for PDF, JPG, PNG, WebP, HEIC, HEIF formats
 *   [x] React Native compatible implementation (works on Expo Go)
-*   [ ] **Phase 4 (Next)**: Add audio generation with expo-speech
+*   [x] **Phase 3 Complete**: Real audio generation with expo-speech TTS
+*   [x] Voice selection (473 voices on Android, 68 on iOS)
+*   [x] Speed control (0.5x - 2.0x)
+*   [x] Play/stop controls with state management
+*   [x] Free and offline (device TTS)
+*   [ ] **Phase 4 (Next)**: UI polish and save/share features
 *   [ ] **Phase 5**: Complete image generation pipeline
-*   [ ] **Phase 6**: Implement save and share functionality
-*   [ ] **Phase 7**: Full integration testing
-*   [ ] **Phase 8**: Polish and documentation
+*   [ ] **Phase 6**: Full integration testing
+*   [ ] **Phase 7**: Final documentation and polish
 
 **See [`docs/ROADMAP_V0.2.md`](docs/ROADMAP_V0.2.md) for detailed implementation plan.**  
 **See [`docs/PHASE_1_COMPLETE.md`](docs/PHASE_1_COMPLETE.md) for Phase 1 completion report.**  
-**See [`docs/PHASE_2_IMPLEMENTATION.md`](docs/PHASE_2_IMPLEMENTATION.md) for Phase 2 completion report.**
+**See [`docs/PHASE_2_IMPLEMENTATION.md`](docs/PHASE_2_IMPLEMENTATION.md) for Phase 2 completion report.**  
+**See [`docs/PHASE_3_IMPLEMENTATION.md`](docs/PHASE_3_IMPLEMENTATION.md) for Phase 3 completion report.**
 
 ### Phase D: Ecosystem Integration
 *   [ ] Align UI with AbiliLife design system.

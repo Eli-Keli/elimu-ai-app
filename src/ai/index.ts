@@ -1,6 +1,6 @@
 import { extractTextFromUri } from './extract/extractText';
 import { simplifyContent } from './adapt/simplifyText';
-import { generateAudio } from './adapt/audioConvert';
+import { speakText, getAvailableVoices } from './adapt/audioConvert';
 import { generateVisuals } from './adapt/visualAids';
 import { 
   DocumentProcessingResult, 
@@ -51,9 +51,12 @@ export async function processDocument(
 
     // Step 3: Generate audio narration (non-blocking)
     console.log('🔊 [3/4] Generating audio narration...');
-    const audioResult = await generateAudio(simplification.simplifiedText);
+    const audioResult = await speakText(simplification.simplifiedText, {
+      language: config?.audio?.language || 'en-US',
+      voiceSpeed: config?.audio?.speed || 1.0,
+    });
     if (audioResult.status === 'ready') {
-      console.log(`✅ Audio generated (${audioResult.duration}s, ${audioResult.format})`);
+      console.log(`✅ Audio generated (${audioResult.duration?.toFixed(1)}s, ${audioResult.format})`);
     } else {
       console.warn('⚠️  Audio generation failed (continuing without audio)');
     }
@@ -113,3 +116,6 @@ export async function processDocument(
 
 // Re-export types for convenience
 export * from './types';
+
+// Export audio utilities
+export { getAvailableVoices } from './adapt/audioConvert';

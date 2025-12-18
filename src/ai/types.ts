@@ -55,8 +55,43 @@ export interface SimplificationResult {
 export interface AudioResult {
     audioUri: string | null;
     duration?: number; // in seconds
-    format?: 'mp3' | 'wav' | 'aac';
+    format?: 'mp3' | 'wav' | 'aac' | 'tts';
     status: 'ready' | 'processing' | 'failed';
+    metadata?: {
+        voiceId?: string;
+        language?: string;
+        speed?: number;
+        pitch?: number;
+        wordCount?: number;
+        charCount?: number;
+    };
+}
+
+/**
+ * Voice information for TTS
+ */
+export interface Voice {
+    id: string; // Voice identifier
+    name: string; // Human-readable name
+    language: string; // Language code (e.g., 'en-US')
+    quality: 'Default' | 'Enhanced';
+}
+
+/**
+ * Configuration for audio generation
+ */
+export interface AudioConfig {
+    voiceId?: string; // Voice identifier
+    language?: string; // Language code (IETF BCP 47)
+    voiceSpeed?: number; // 0.5 - 2.0 (1.0 = normal)
+    pitch?: number; // 0.5 - 2.0 (1.0 = normal)
+    
+    // Callbacks
+    onStart?: () => void;
+    onDone?: () => void;
+    onStopped?: () => void;
+    onError?: (error: Error) => void;
+    onProgress?: (event: any) => void; // Word boundary events
 }
 
 /**
