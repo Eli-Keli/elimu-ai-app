@@ -131,9 +131,17 @@ npx ts-node test-gemini.ts
 - react-native-pdf-lib
 - Custom iOS prebuild configuration
 
-### Phase 3-4 (Future)
-- expo-speech (already installed)
-- Additional audio format support
+### Phase 3 (Complete) ✅
+- **expo-speech** (~14.0.8) - Text-to-speech with voice selection and speed control
+- **@react-native-picker/picker** (^2.9.0) - Voice selection dropdown UI component
+- **@react-native-community/slider** (^4.5.5) - Speed control slider UI component
+- Successfully tested on Android (473 voices) and iOS (68 voices)
+- Direct TTS playback architecture with event callbacks
+- Zero cost (vs $16/1M characters for cloud TTS)
+
+### Phase 4 (Future)
+- Additional audio format support (MP3 export, audio library integration)
+- Advanced accessibility features
 
 ### Phase 5-6 (Future)
 - expo-sharing

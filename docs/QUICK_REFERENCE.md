@@ -84,9 +84,114 @@ npm update
 
 ---
 
+## What's Working ✅
+
+✅ Basic Expo app structure with routing  
+✅ Document upload flow (PDF/image picker)  
+✅ Real text extraction from PDFs and images using Gemini multimodal API (Phase 2)  
+✅ Real text simplification using Gemini API (Phase 1)  
+✅ Real visual aids generation using Gemini API (Phase 1)  
+✅ Real TTS audio playback with voice selection and speed control (Phase 3)  
+🚧 Accessibility settings (stubbed)
+
+---
+
 ## Key Functions & Types
 
-### AI Pipeline
+### Audio Functions (Phase 3)
+
+#### Speaking Text with TTS
+```typescript
+import { speakText } from '@/src/ai/adapt/audioConvert';
+
+// Basic usage
+await speakText('Hello, this is a test.');
+
+// With voice selection and speed control
+await speakText('Hello, this is a test.', {
+  voice: 'com.apple.ttsbundle.Samantha-compact',
+  rate: 1.2, // 1.2x speed
+  pitch: 1.0,
+  onStart: () => console.log('Started speaking'),
+  onDone: () => console.log('Finished speaking'),
+  onStopped: () => console.log('Stopped speaking'),
+  onError: (error) => console.error('TTS error:', error)
+});
+```
+
+#### Getting Available Voices
+```typescript
+import { getAvailableVoices } from '@/src/ai/adapt/audioConvert';
+
+const voices = await getAvailableVoices();
+console.log(`Found ${voices.length} voices`);
+
+// Filter by language
+const englishVoices = voices.filter(v => v.language.startsWith('en'));
+
+// Example voice object:
+// {
+//   identifier: 'com.apple.ttsbundle.Samantha-compact',
+//   name: 'Samantha',
+//   language: 'en-US',
+//   quality: 'Enhanced'
+// }
+```
+
+#### Controlling Playback
+```typescript
+import { 
+  isSpeaking, 
+  pauseSpeech, 
+  resumeSpeech, 
+  stopSpeech 
+} from '@/src/ai/adapt/audioConvert';
+
+// Check if currently speaking
+const speaking = await isSpeaking();
+
+// Pause/resume
+if (speaking) {
+  await pauseSpeech();
+  // ... later
+  await resumeSpeech();
+}
+
+// Stop completely
+await stopSpeech();
+```
+
+#### UI Integration Example (from results.tsx)
+```typescript
+const [isPlaying, setIsPlaying] = useState(false);
+const [selectedVoice, setSelectedVoice] = useState<string>('');
+const [speed, setSpeed] = useState(1.0);
+
+const handlePlayPause = async () => {
+  if (isPlaying) {
+    await stopSpeech();
+    setIsPlaying(false);
+  } else {
+    await speakText(simplifiedText, {
+      voice: selectedVoice,
+      rate: speed,
+      onStart: () => setIsPlaying(true),
+      onDone: () => setIsPlaying(false),
+      onStopped: () => setIsPlaying(false),
+      onError: (error) => {
+        console.error('TTS error:', error);
+        setIsPlaying(false);
+      }
+    });
+  }
+};
+```
+
+---
+
+## AI Pipeline
+
+### Main Document Processing
 
 ```typescript
 // Main function - process a document

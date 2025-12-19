@@ -170,13 +170,16 @@ export async function processDocument(
 
 **Purpose**: Extracts raw text from documents (PDFs, images).
 
-**Current Status**: 🚧 Stubbed (returns mock data)
+**Current Status**: ✅ Production-Ready (Phase 2 complete)
 
-**Future Implementation**:
-- PDFs: Use `expo-file-system` + PDF.js or native PDF parsing
-- Images: Use OCR (Tesseract.js or Google ML Kit Vision)
-- Multi-page document support
-- Confidence scoring for OCR results
+**Implementation**:
+- Uses Gemini 2.5 Flash multimodal API for unified PDF and image extraction
+- Automatic OCR for scanned documents and images
+- Supports PDF, JPG, PNG, WebP, HEIC, HEIF formats (up to 50MB)
+- Single API call handles both text extraction and OCR
+- Converts files to base64 for Gemini processing
+- Cost: ~$0.038 per 1000 images (far cheaper than dedicated OCR services)
+- Successfully tested on real PDFs and images
 
 **Output**: `ExtractionResult`
 ```typescript
@@ -223,24 +226,50 @@ export async function processDocument(
 
 **Purpose**: Generates audio narration from text for visually impaired users.
 
-**Current Status**: 🚧 Stubbed (returns mock URI)
+**Current Status**: ✅ Production-Ready (Phase 3 complete)
 
-**Future Implementation**:
-- **Basic**: Use `expo-speech` for in-app TTS
-- **Advanced**: Use cloud TTS (Google Cloud TTS, Amazon Polly, ElevenLabs)
-- Support voice selection (male/female/neutral)
-- Speed control (0.5x - 2.0x)
-- Multi-language support
-- Audio file caching
-
-**Output**: `AudioResult`
+**Key Functions**:
 ```typescript
-{
-  audioUri: string | null;
-  duration?: number;  // seconds
-  format?: 'mp3' | 'wav' | 'aac';
-  status: 'ready' | 'processing' | 'failed';
+export async function speakText(text: string, config?: AudioConfig): Promise<void>
+export async function getAvailableVoices(): Promise<Voice[]>
+export async function isSpeaking(): Promise<boolean>
+export async function pauseSpeech(): Promise<void>
+export async function resumeSpeech(): Promise<void>
+export async function stopSpeech(): Promise<void>
+```
+
+**Implementation**:
+- Uses `expo-speech` for direct TTS playback (no file generation)
+- Device TTS: Free, offline, 473 voices (Android), 68 voices (iOS)
+- Event-driven architecture with callbacks (onStart, onDone, onError, onStopped)
+- Adjustable speed (0.5x-2.0x) and pitch (0.5x-2.0x)
+- Voice selection with language and quality metadata
+- Cross-platform compatibility (iOS/Android/Web)
+- Successfully tested on Android and iOS simulators
+- Zero cost (vs $16/1M characters for cloud TTS)
+
+**Voice Interface**:
+```typescript
+interface Voice {
+  identifier: string;
+  name: string;
+  language: string;
+  quality: string;
 }
+```
+
+**AudioConfig Interface**:
+```typescript
+interface AudioConfig {
+  voice?: string;
+  rate?: number;      // 0.5 - 2.0 (default: 1.0)
+  pitch?: number;     // 0.5 - 2.0 (default: 1.0)
+  onStart?: () => void;
+  onDone?: () => void;
+  onStopped?: () => void;
+  onError?: (error: Error) => void;
+}
+```
 ```
 
 ---
