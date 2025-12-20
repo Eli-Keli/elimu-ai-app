@@ -1,0 +1,89 @@
+{
+    "id": "chemistry_atoms",
+    "title": "Atomic Structure and the Periodic Table",
+    "subject": "Chemistry",
+    "gradeLevel": "Grade 10",
+    "level": "Senior Secondary",
+    "curriculum": "CBC Kenya",
+    "learningArea": "Science and Technology",
+    "strand": "Chemistry - Structure and Bonding",
+    "substrand": "Atomic Structure",
+    "competencies": [
+        "Critical thinking and problem solving",
+        "Communication and collaboration",
+        "Learning to learn"
+    ],
+    "learningOutcomes": [
+        "Describe the structure of an atom",
+        "Calculate number of protons, neutrons, and electrons",
+        "Use the periodic table to find element information",
+        "Explain electron arrangement in shells"
+    ],
+    "pcis": [
+        "Life Skills: Problem-solving (calculating atomic particles)",
+        "Science and Technology: Understanding matter"
+    ],
+    "readingLevel": "8th grade",
+    "originalText": "An atom consists of a dense nucleus containing protons (positive charge) and neutrons (no charge), surrounded by a cloud of electrons (negative charge) occupying discrete energy levels or shells. The atomic number determines the element's identity and equals the number of protons. The mass number represents the sum of protons and neutrons. Electrons in the outermost shell (valence electrons) determine an atom's chemical properties and bonding behavior.",
+    "simplifiedText": "**Muundo wa Atomi (Atomic Structure)**\n\n⚛️ An **atom** is the smallest particle of an element. Everything - from water to ugali to your phone - is made of atoms!\n\n**Parts of an Atom:**\n\n**1. Nucleus (Kiini) - The Center**\n\n➕ **Protons (Protoni)** - Positive (+)\n- Charge: +1\n- Mass: 1 amu\n- **Determines the element!**\n- If protons change, it becomes a different element\n\n⚪ **Neutrons (Neutroni)** - Neutral (0)\n- Charge: 0 (no charge)\n- Mass: 1 amu\n- Holds nucleus together\n- Can vary in number (isotopes)\n\n**2. Electrons (Elektroni) - Outside**\n\n➖ **Electrons** - Negative (-)\n- Charge: -1\n- Mass: Almost zero (very light!)\n- Move around nucleus in shells\n- **Involved in bonding!**\n\n**Key Numbers:**\n\n📊 **Atomic Number (Z)**\n- Number of PROTONS\n- Identifies the element\n- Example: Sodium (Na) always has 11 protons\n\n⚖️ **Mass Number (A)**\n- Protons + Neutrons\n- Example: Sodium-23 = 11 protons + 12 neutrons\n\n🧮 **Calculate Neutrons:**\nNeutrons = Mass Number - Atomic Number\nN = A - Z\n\n**Electron Arrangement (Shells):**\n\n1st Shell (K): Maximum 2 electrons\n2nd Shell (L): Maximum 8 electrons\n3rd Shell (M): Maximum 8 electrons\n4th Shell (N): Maximum 8 electrons\n\n**Examples:**\n\n| Element | Protons | Electrons | Arrangement |\n|---------|---------|-----------|-------------|\n| Hydrogen (H) | 1 | 1 | 1 |\n| Carbon (C) | 6 | 6 | 2,4 |\n| Oxygen (O) | 8 | 8 | 2,6 |\n| Sodium (Na) | 11 | 11 | 2,8,1 |\n| Chlorine (Cl) | 17 | 17 | 2,8,7 |\n| Calcium (Ca) | 20 | 20 | 2,8,8,2 |\n\n**The Periodic Table (Jedwali la Viambata):**\n\nDmitri Mendeleev organized elements by atomic number.\n\n```\n     17          ← Atomic Number (Namba Atomiki)\n     Cl          ← Symbol (Alama)\n   Chlorine      ← Name (Jina)\n   35.45         ← Atomic Mass (Uzani)\n```\n\n**Real-Life in Kenya:**\n\n💧 **Water (H₂O):** Hydrogen (1 proton) + Oxygen (8 protons)\n🧂 **Table Salt (NaCl):** Sodium (11 protons) + Chlorine (17 protons)\n🌾 **Fertilizer (NPK):** Nitrogen (7), Phosphorus (15), Potassium (19)\n⚡ **Copper Wires:** Copper (29 protons) conducts electricity\n🏗️ **Cement:** Contains Calcium (20 protons)\n\n**Practice Problems:**\n\n**Problem 1: Sodium (Na)**\n- Atomic number = 11\n- Mass number = 23\n- Find: p⁺, n⁰, e⁻, arrangement\n\n**Answer:**\n- Protons = 11\n- Electrons = 11\n- Neutrons = 23 - 11 = 12\n- Arrangement = 2,8,1\n\n**Problem 2: Chlorine (Cl)**\n- Z = 17, A = 35\n- Protons = 17\n- Neutrons = 35 - 17 = 18\n- Electrons = 17\n- Arrangement = 2,8,7",
+    "keyTakeaways": [
+        "Atoms have protons (+), neutrons (0), and electrons (-)",
+        "Atomic number = number of protons (determines element)",
+        "Mass number = protons + neutrons",
+        "Electrons orbit in shells: 2, 8, 8, 8 (first 20 elements)",
+        "The periodic table organizes elements by atomic number"
+    ],
+    "visualAids": [
+        {
+            "type": "diagram",
+            "title": "Atom Structure with Labels",
+            "description": "Large diagram showing nucleus in center (red/gray protons and neutrons clustered together) with blue electron shells orbiting around. Clear labels in English and Swahili: Nucleus/Kiini, Protons/Protoni (+), Neutrons/Neutroni (0), Electrons/Elektroni (-), Shells/Ganda",
+            "imagePath": "atom_structure.png"
+        },
+        {
+            "type": "diagram",
+            "title": "Sodium and Chlorine Atoms",
+            "description": "Side-by-side atomic diagrams of Sodium (Na: 11 protons, 2,8,1 arrangement) and Chlorine (Cl: 17 protons, 2,8,7 arrangement) showing how they form NaCl (table salt). Show electron transfer.",
+            "imagePath": "carbon_atom.png"
+        }
+    ],
+    "quiz": [
+        {
+            "question": "What particles are found in the nucleus?",
+            "options": [
+                "Electrons only",
+                "Protons and neutrons",
+                "Electrons and protons",
+                "Neutrons only"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The nucleus contains protons (positive) and neutrons (neutral). Electrons orbit outside."
+        },
+        {
+            "question": "If an atom has 17 protons and mass number 35, how many neutrons does it have?",
+            "options": [
+                "17",
+                "18",
+                "35",
+                "52"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Neutrons = Mass number - Atomic number = 35 - 17 = 18 neutrons"
+        },
+        {
+            "question": "What determines which element an atom is?",
+            "options": [
+                "Number of neutrons",
+                "Number of electrons",
+                "Number of protons",
+                "Mass number"
+            ],
+            "correctAnswer": 2,
+            "explanation": "The number of protons (atomic number) determines the element. Sodium always has 11 protons."
+        }
+    ],
+    "estimatedReadTime": "9 minutes",
+    "difficulty": "Intermediate",
+    "ageRange": "15-17 years",
+    "cbc_assessment": "ME (Meeting Expectations) - Learner can describe atomic structure, calculate subatomic particles, and use the periodic table"
+}

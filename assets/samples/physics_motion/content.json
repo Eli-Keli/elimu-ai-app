@@ -1,0 +1,100 @@
+{
+    "id": "physics_motion",
+    "title": "Newton's Laws of Motion",
+    "subject": "Physics",
+    "gradeLevel": "Grade 10",
+    "level": "Senior Secondary",
+    "curriculum": "CBC Kenya",
+    "learningArea": "Science and Technology",
+    "strand": "Physics - Mechanics",
+    "substrand": "Laws of Motion",
+    "competencies": [
+        "Critical thinking and problem solving",
+        "Communication and collaboration",
+        "Learning to learn"
+    ],
+    "learningOutcomes": [
+        "State and explain Newton's three laws of motion",
+        "Apply F=ma to solve problems",
+        "Identify action-reaction pairs",
+        "Relate laws of motion to everyday experiences in Kenya"
+    ],
+    "pcis": [
+        "Life Skills: Cause and effect thinking",
+        "Safety Education: Understanding seatbelts and vehicle motion"
+    ],
+    "readingLevel": "7th grade",
+    "originalText": "Sir Isaac Newton formulated three fundamental laws that describe the relationship between an object and the forces acting upon it. The First Law (Inertia) states that an object at rest stays at rest and an object in motion stays in motion unless acted upon by an external force. The Second Law establishes that force equals mass times acceleration (F=ma). The Third Law posits that for every action, there is an equal and opposite reaction. These principles form the foundation of classical mechanics.",
+    "simplifiedText": "**Sheria za Newton za Mwendo (Newton's Laws of Motion)**\n\nSir Isaac Newton discovered three important rules about how things move.\n\n---\n\n**LAW 1: The Law of Inertia (Sheria ya Utulivu)** 🛋️\n\n**\"Things keep doing what they're doing unless something stops them.\"**\n\n**Formal Statement:**\nAn object at rest stays at rest, and an object in motion stays in motion at constant velocity, unless acted upon by an external force.\n\n**Examples in Kenya:**\n\n🚌 **Matatu braking suddenly:**\n- Matatu stops, but passengers keep moving forward\n- That's why we need seatbelts!\n- Your body wants to keep moving (inertia)\n\n⚽ **Football on the pitch:**\n- A ball sits still until someone kicks it\n- A rolling ball keeps rolling until friction stops it\n\n🪨 **Pushing a rock:**\n- A heavy rock stays still until you push hard enough\n- Once moving, it wants to keep moving\n\n---\n\n**LAW 2: Force = Mass × Acceleration** 📐\n\n**F = ma**\n\n**\"Heavier things need more force to move.\"**\n\n**Where:**\n- **F** = Force (measured in Newtons, N)\n- **m** = Mass (measured in kilograms, kg)\n- **a** = Acceleration (measured in m/s²)\n\n**What it means:**\n- More force → faster acceleration\n- More mass → needs more force\n- Less mass → easier to move\n\n**Examples in Kenya:**\n\n🚲 **Bicycle vs Car:**\n- Easy to push a bicycle (small mass)\n- Hard to push a car (large mass)\n- Same force, different acceleration!\n\n🏋️ **Carrying luggage:**\n- Light bag: Easy to lift (small m, small F needed)\n- Heavy suitcase: Hard to lift (large m, large F needed)\n\n🚜 **Tractor pulling:**\n- Empty trailer: Moves fast (less mass)\n- Full trailer: Moves slow (more mass)\n- Same engine force!\n\n**Practice Calculations:**\n\n**Example 1:**\nA 50kg student on a boda boda.\nThe boda accelerates at 2 m/s².\nFind the force.\n\n**Solution:**\nF = ma\nF = 50 kg × 2 m/s²\nF = 100 N (Newtons)\n\n**Example 2:**\nA matatu (mass 2000kg) accelerates at 1.5 m/s².\nFind the force from the engine.\n\n**Solution:**\nF = ma\nF = 2000 kg × 1.5 m/s²\nF = 3000 N\n\n---\n\n**LAW 3: Action-Reaction (Kitendo na Mwitikio)** ⚖️\n\n**\"For every action, there is an equal and opposite reaction.\"**\n\n**Formal Statement:**\nWhen one object exerts a force on a second object, the second object exerts an equal force in the opposite direction on the first object.\n\n**Key Points:**\n- Forces come in PAIRS\n- Same size (magnitude)\n- Opposite direction\n- Act on DIFFERENT objects\n\n**Examples in Kenya:**\n\n🚶 **Walking:**\n- Your foot pushes BACKWARD on the ground (action)\n- Ground pushes FORWARD on you (reaction)\n- That's how you move forward!\n\n🏊 **Swimming in Lake Victoria:**\n- You push water BACKWARD (action)\n- Water pushes you FORWARD (reaction)\n\n🚀 **Rocket (or fireworks):**\n- Rocket pushes gas DOWNWARD (action)\n- Gas pushes rocket UPWARD (reaction)\n\n🛶 **Rowing a boat on Lake Nakuru:**\n- Oar pushes water BACKWARD (action)\n- Water pushes boat FORWARD (reaction)\n\n🤜 **Pushing a wall:**\n- You push wall → Wall pushes you back\n- If wall is stronger, you move backward!\n\n⚽ **Kicking a ball:**\n- Your foot pushes ball forward (action)\n- Ball pushes your foot backward (reaction)\n- Ball flies away, your foot feels the push!\n\n---\n\n**Summary Table:**\n\n| Law | Name | Key Idea | Formula |\n|-----|------|----------|--------|\n| 1st | Inertia | Things resist change | None |\n| 2nd | F=ma | Force causes acceleration | F = ma |\n| 3rd | Action-Reaction | Forces come in pairs | None |\n\n**Real-Life Applications:**\n\n🚗 **Vehicle Safety:**\n- Seatbelts (Law 1): Stop your inertia\n- Airbags (Law 2): Reduce force on you\n- Crumple zones (Law 2): Increase time, decrease force\n\n✈️ **Airplanes:**\n- Engines push air backward (Law 3)\n- Air pushes plane forward\n\n🎯 **Sports:**\n- Throwing javelin (Law 2): More force → farther throw\n- Running (Law 3): Push ground → you move forward",
+    "keyTakeaways": [
+        "Law 1 (Inertia): Objects resist changes in motion - explains seatbelts",
+        "Law 2 (F=ma): Force causes acceleration - heavier things need more force",
+        "Law 3 (Action-Reaction): Forces come in equal and opposite pairs",
+        "These laws explain everything from walking to rockets",
+        "Understanding these keeps you safe in matatus and vehicles"
+    ],
+    "visualAids": [
+        {
+            "type": "diagram",
+            "title": "Newton's Three Laws Illustrated",
+            "description": "Three panels: 1) Matatu passengers lurching forward when brakes applied (Law 1), 2) Person pushing light vs heavy cart with arrows showing F and a (Law 2), 3) Person walking with action-reaction arrows on feet and ground (Law 3)",
+            "imagePath": "three_laws.png"
+        },
+        {
+            "type": "diagram",
+            "title": "Action-Reaction Pairs in Kenya",
+            "description": "Multiple examples with paired arrows: Walking (foot→ground, ground→foot), Swimming (hand→water, water→hand), Rowing boat (oar→water, water→boat), Rocket (gas↓, rocket↑)",
+            "imagePath": "rocket_diagram.png"
+        }
+    ],
+    "quiz": [
+        {
+            "question": "What is Newton's First Law also called?",
+            "options": [
+                "The Law of Gravity",
+                "The Law of Inertia",
+                "The Law of Energy",
+                "The Law of Acceleration"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The First Law is called the Law of Inertia - objects resist changes in motion. That's why you move forward when a matatu brakes!"
+        },
+        {
+            "question": "If F = ma, and you double the force on the same object, what happens to acceleration?",
+            "options": [
+                "Acceleration halves",
+                "Acceleration stays the same",
+                "Acceleration doubles",
+                "Mass doubles"
+            ],
+            "correctAnswer": 2,
+            "explanation": "If F doubles and m stays the same, then a must double (a = F/m). More force = more acceleration!"
+        },
+        {
+            "question": "When you walk forward, what is the reaction force?",
+            "options": [
+                "Your foot pushing backward on the ground",
+                "The ground pushing forward on you",
+                "Gravity pulling you down",
+                "Air resistance"
+            ],
+            "correctAnswer": 1,
+            "explanation": "ACTION: Your foot pushes backward on ground. REACTION: Ground pushes forward on you. That's how you move!"
+        },
+        {
+            "question": "Calculate: A 10kg box is pushed with 50N of force. What is the acceleration?",
+            "options": [
+                "5 m/s²",
+                "50 m/s²",
+                "500 m/s²",
+                "0.2 m/s²"
+            ],
+            "correctAnswer": 0,
+            "explanation": "Use F = ma, so a = F/m = 50N / 10kg = 5 m/s²"
+        }
+    ],
+    "estimatedReadTime": "11 minutes",
+    "difficulty": "Intermediate",
+    "ageRange": "15-17 years",
+    "cbc_assessment": "ME (Meeting Expectations) - Learner can state and explain the three laws, apply F=ma to calculations, and identify action-reaction pairs"
+}

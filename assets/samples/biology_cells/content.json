@@ -1,0 +1,94 @@
+{
+    "id": "biology_cells",
+    "title": "Cell Structure and Functions",
+    "subject": "Integrated Science",
+    "gradeLevel": "Grade 7",
+    "level": "Junior Secondary",
+    "curriculum": "CBC Kenya",
+    "learningArea": "Science and Technology",
+    "strand": "Biology - Cell Biology",
+    "substrand": "Cell Structure",
+    "competencies": [
+        "Communication and collaboration",
+        "Critical thinking and problem solving",
+        "Digital literacy"
+    ],
+    "learningOutcomes": [
+        "Identify parts of a cell and their functions",
+        "Differentiate between plant and animal cells",
+        "Explain how cells work together to form tissues and organs"
+    ],
+    "pcis": [
+        "Life Skills: Cooperation (cells working together)",
+        "Environmental Education: Appreciating living things"
+    ],
+    "readingLevel": "6th grade",
+    "originalText": "Cells are the basic structural and functional units of all living organisms. Eukaryotic cells, found in plants and animals, contain membrane-bound organelles including the nucleus, mitochondria, endoplasmic reticulum, and Golgi apparatus. The nucleus houses genetic material in the form of DNA, which directs cellular activities. Mitochondria serve as the powerhouse of the cell, producing ATP through cellular respiration. The endoplasmic reticulum facilitates protein synthesis and lipid metabolism, while the Golgi apparatus modifies and packages proteins for transport.",
+    "simplifiedText": "**Vipengele vya Seli (Cell Parts)**\n\n🔬 A **cell** is the smallest unit of life. All living things - from ugali to you - are made of cells!\n\n**Parts of a Cell:**\n\n🧬 **Nucleus (Kiini)** - The control center\n- Contains DNA (instruction manual)\n- Controls all cell activities\n- Like a school principal giving directions\n\n⚡ **Mitochondria (Mitochondria)** - The powerhouse\n- Makes energy (ATP) for the cell\n- Found in both plants and animals\n- Like KPLC providing electricity\n\n🏭 **Cell Membrane (Utando wa Seli)** - The gatekeeper\n- Controls what enters and leaves the cell\n- Like a security guard at a gate\n- Protects the cell\n\n🌳 **Cell Wall (Ukuta wa Seli)** - Only in PLANTS!\n- Gives plants their rigid shape\n- Made of cellulose\n- Why trees stand strong!\n\n🟢 **Chloroplasts (Kloroplasti)** - Only in PLANTS!\n- Contains chlorophyll (green color)\n- Makes food using sunlight\n- Why leaves are green!\n\n💧 **Vacuole (Kisukuku)** - Storage\n- Plants: ONE large vacuole\n- Animals: MANY small vacuoles\n- Stores water, food, waste\n\n**Plant vs Animal Cells:**\n\n| Feature | Plant Cell | Animal Cell |\n|---------|-----------|-------------|\n| Cell Wall | ✅ YES | ❌ NO |\n| Chloroplasts | ✅ YES | ❌ NO |\n| Shape | Square/Rectangular | Round/Irregular |\n| Vacuole | Large (1) | Small (many) |\n| Cell Membrane | ✅ YES | ✅ YES |\n| Nucleus | ✅ YES | ✅ YES |\n\n**Kenyan Examples:**\n\n🌽 **Mahindi (Maize):** Plant cells with chloroplasts make food\n🐔 **Kuku (Chicken):** Animal cells make up muscles\n🥬 **Sukuma Wiki:** Green chloroplasts in every cell!\n🐟 **Samaki:** Fish cells have no cell walls (flexible for swimming)",
+    "keyTakeaways": [
+        "Cells are the smallest units of life (viini vya uhai)",
+        "Plant cells have cell walls and chloroplasts; animal cells don't",
+        "The nucleus controls the cell like a principal runs a school",
+        "Mitochondria makes energy like a power station",
+        "All living things in Kenya - from baobab trees to elephants - are made of cells"
+    ],
+    "visualAids": [
+        {
+            "type": "diagram",
+            "title": "Plant Cell vs Animal Cell",
+            "description": "Side-by-side labeled diagrams showing: Plant cell (rectangular with cell wall, large vacuole, chloroplasts, nucleus, mitochondria) vs Animal cell (round with cell membrane, small vacuoles, nucleus, mitochondria). Use green for plant cell, pink for animal cell.",
+            "imagePath": "cell_structure.png"
+        },
+        {
+            "type": "infographic",
+            "title": "Cell Parts as a School",
+            "description": "Infographic comparing cell parts to a Kenyan school: Nucleus = Principal's office, Mitochondria = Generator/power room, Cell Membrane = School gate with guard, Chloroplasts = School farm/kitchen, Vacuole = Storage room",
+            "imagePath": "cell_comparison.png"
+        },
+        {
+            "type": "diagram",
+            "title": "Kenyan Plant Cells",
+            "description": "Illustration showing cell structure in common Kenyan plants: Maize leaf cell, Sukuma wiki cell, Mango leaf cell - all showing chloroplasts and cell walls",
+            "imagePath": "cell_analogy.png"
+        }
+    ],
+    "quiz": [
+        {
+            "question": "What is the control center of the cell?",
+            "options": [
+                "Mitochondria",
+                "Nucleus (Kiini)",
+                "Cell Wall",
+                "Chloroplast"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The nucleus (kiini) is the control center. It contains DNA which gives instructions to the cell."
+        },
+        {
+            "question": "Which cell part is ONLY found in plant cells?",
+            "options": [
+                "Nucleus",
+                "Mitochondria",
+                "Cell Wall (Ukuta wa Seli)",
+                "Cell Membrane"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Cell walls and chloroplasts are only in plant cells. They give plants structure and help them make food."
+        },
+        {
+            "question": "What does the chloroplast do?",
+            "options": [
+                "Controls the cell",
+                "Makes energy",
+                "Makes food using sunlight",
+                "Stores water"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Chloroplasts make food for the plant using sunlight (photosynthesis). That's why leaves are green!"
+        }
+    ],
+    "estimatedReadTime": "7 minutes",
+    "difficulty": "Beginner",
+    "ageRange": "12-14 years",
+    "cbc_assessment": "ME (Meeting Expectations) - Learner can identify and explain cell parts and differences between plant and animal cells"
+}

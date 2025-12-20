@@ -646,6 +646,268 @@ processDocument(uri, {
 - Or display AI-generated text descriptions as cards
 - Make these saveable/shareable
 
+---
+
+### 🎨 Visual Aids Strategy: Pre-Generated Images + Text Fallback
+
+#### **Hybrid Approach (RECOMMENDED)**
+
+**For Sample Documents (Phase 4):**
+- Pre-generate 2-3 images per sample using Google Nano Banana Pro (via Gemini chat, Canva, or Excalidraw)
+- Store in `assets/samples/[topic]/images/` folder
+- Bundle with app - instant load, zero runtime cost
+- Total: ~15 images (5 samples × 3 images), ~3-5MB
+
+**For User Documents:**
+- Use text-based visual aids (current implementation - FREE)
+- Style as beautiful cards with emoji/icons
+- Future Phase 5+: Optional Nano Banana Pro API integration ($0.02/image) for premium users
+
+#### **Sample Documents Structure**
+
+```
+assets/samples/
+├── biology_cells/
+│   ├── content.json              // Simplified text + metadata
+│   ├── cell_structure.png        // Pre-generated diagram
+│   ├── mitosis_stages.png        // Process diagram
+│   └── summary_infographic.png   // Key points visual
+│
+├── math_quadratic/
+│   ├── content.json
+│   ├── parabola_graph.png        // Equation visualization
+│   └── solution_steps.png        // Step-by-step diagram
+│
+├── history_wwii/
+│   ├── content.json
+│   ├── timeline.png              // Events timeline
+│   └── europe_map.png            // Geographic context
+│
+├── physics_motion/
+│   ├── content.json
+│   ├── velocity_graph.png
+│   └── forces_diagram.png
+│
+└── chemistry_atoms/
+    ├── content.json
+    ├── atomic_structure.png
+    └── periodic_table_section.png
+```
+
+#### **Image Generation Tools**
+
+1. **Google Nano Banana Pro** - Recommended ✅
+   - Accessed via Gemini chat interface
+   - High quality, educational diagrams
+   - Consistent with our all-Google tech stack
+   - URL: https://gemini.google.com/
+
+2. **Canva Free** 
+   - Create infographics, timelines, diagrams
+   - Professional templates
+   - Export as PNG
+
+3. **Excalidraw**
+   - Hand-drawn style diagrams
+   - Perfect for educational content
+   - URL: https://excalidraw.com
+
+4. **Mermaid.js**
+   - Code-generated flowcharts/diagrams
+   - Can be rendered to PNG
+   - URL: https://mermaid.live
+
+#### **Image Generation Prompts (Examples)**
+
+**Biology - Cell Structure:**
+```
+"Educational diagram of a plant cell with clearly labeled parts including 
+nucleus, mitochondria, chloroplast, cell wall, and cell membrane. 
+Cartoon style, colorful, easy to understand for students. White background."
+```
+
+**Math - Quadratic Equation:**
+```
+"Graph of a parabola showing y = x² + 5x + 6 with labeled vertex, 
+x-intercepts, and y-intercept. Clean educational style with grid lines. 
+Colorful but professional for students."
+```
+
+**History - WWII Timeline:**
+```
+"Horizontal timeline of major World War 2 events from 1939 to 1945, 
+showing key battles and turning points. Educational infographic style, 
+colorful icons for each event, easy to read for students."
+```
+
+#### **Asset Size & Performance**
+
+- **Each image:** 200-400KB (optimized PNG)
+- **5 samples × 3 images:** ~3-6MB total
+- **Bundle impact:** Acceptable for mobile apps
+- **Load time:** Instant (bundled, no network)
+- **Offline:** Works 100% offline
+
+#### **Implementation in Code**
+
+```typescript
+// src/services/sampleDocuments.ts
+export interface SampleDocument {
+  id: string;
+  title: string;
+  subject: string;
+  emoji: string;
+  preview: string;
+  content: {
+    simplified: string;
+    keyTakeaways: string[];
+    difficulty: string;
+  };
+  images: Array<{
+    uri: any;  // require() result
+    type: 'diagram' | 'infographic' | 'timeline' | 'graph' | 'map';
+    title: string;
+    description: string;
+  }>;
+}
+
+export const SAMPLE_DOCUMENTS: SampleDocument[] = [
+  {
+    id: 'biology_cells',
+    title: 'Cell Structure',
+    subject: 'Biology',
+    emoji: '🧬',
+    preview: 'Learn about plant and animal cells...',
+    content: require('../../assets/samples/biology_cells/content.json'),
+    images: [
+      {
+        uri: require('../../assets/samples/biology_cells/cell_structure.png'),
+        type: 'diagram',
+        title: 'Plant Cell Structure',
+        description: 'A labeled diagram showing all major organelles...'
+      },
+      {
+        uri: require('../../assets/samples/biology_cells/mitosis_stages.png'),
+        type: 'diagram',
+        title: 'Stages of Mitosis',
+        description: 'The four stages of cell division...'
+      }
+    ]
+  },
+  // ... more samples
+];
+```
+
+#### **Display in Results Screen**
+
+```tsx
+// app/results.tsx - Visuals Tab
+{visualAids.images.map((visual, index) => (
+  <View key={index} style={styles.visualSlide}>
+    {visual.uri ? (
+      // Pre-generated image (sample documents)
+      <Image 
+        source={visual.uri} 
+        style={styles.visualImage}
+        resizeMode="contain"
+      />
+    ) : (
+      // Text-based visual (user documents)
+      <View style={styles.textVisualCard}>
+        <Text style={styles.visualIcon}>
+          {getIconForType(visual.type)}
+        </Text>
+        <Text style={styles.visualType}>{visual.type}</Text>
+        <Text style={styles.visualDescription}>
+          {visual.description}
+        </Text>
+      </View>
+    )}
+    <Text style={styles.visualTitle}>{visual.title}</Text>
+  </View>
+))}
+```
+
+#### **Text-Based Visuals Styling (User Documents)**
+
+```tsx
+// Beautiful card design for text-based visuals
+<View style={[styles.textVisualCard, styles[`${visual.type}Card`]]}>
+  <View style={styles.iconCircle}>
+    <Text style={styles.iconLarge}>{getIconForType(visual.type)}</Text>
+  </View>
+  <Text style={styles.visualTypeLabel}>{formatType(visual.type)}</Text>
+  <Text style={styles.visualContent}>{visual.description}</Text>
+</View>
+
+// Example styling
+textVisualCard: {
+  padding: 24,
+  borderRadius: 16,
+  backgroundColor: colors.surface,
+  borderWidth: 2,
+  borderColor: colors.primaryLight,
+  minHeight: 300,
+}
+
+mindMapCard: {
+  borderColor: colors.primary,
+  backgroundColor: colors.primaryLight + '10',
+}
+
+timelineCard: {
+  borderColor: colors.info,
+  backgroundColor: colors.info + '10',
+}
+```
+
+#### **Future: Nano Banana Pro API Integration (Phase 5+)**
+
+```typescript
+// Future premium feature
+async function generateCustomDiagram(description: string, userHasPremium: boolean) {
+  if (!userHasPremium) {
+    return generateTextBasedVisual(description); // Free fallback
+  }
+  
+  // Call Google Nano Banana Pro API
+  const response = await fetch('https://aiplatform.googleapis.com/v1/projects/.../generateImages', {
+    method: 'POST',
+    body: JSON.stringify({
+      prompt: `Educational diagram: ${description}`,
+      numberOfImages: 1,
+      aspectRatio: '1:1',
+    })
+  });
+  
+  // Cache locally
+  const imageUri = await cacheImage(response.imageUri);
+  return imageUri; // Cost: $0.02 per generation
+}
+```
+
+#### **Cost Comparison**
+
+| Approach | Setup Cost | Runtime Cost | Quality | Offline |
+|----------|-----------|--------------|---------|---------|
+| **Pre-generated (samples)** | $0 (free tools) | $0 | High | ✅ Yes |
+| **Text-based (users)** | $0 | $0 | Good | ✅ Yes |
+| **Nano Banana Pro API (premium)** | $0 | $0.02/image | Excellent | ❌ No |
+| **Cloud TTS (comparison)** | N/A | $16/1M chars | N/A | ❌ No |
+
+#### **Phase 4 Action Items**
+
+1. ✅ Generate 15 images using Google Nano Banana Pro via Gemini (30 min)
+2. ✅ Optimize images with TinyPNG or ImageOptim (<300KB each)
+3. ✅ Create `assets/samples/` folder structure
+4. ✅ Create JSON content files for each sample
+5. ✅ Update `sampleDocuments.ts` service
+6. ✅ Implement image carousel in results screen
+7. ✅ Style text-based visuals beautifully
+8. ✅ Test on iOS and Android
+
+---
+
 #### **Tab 4: Study Notes (NEW)**
 
 ```

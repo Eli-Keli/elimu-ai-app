@@ -1,0 +1,95 @@
+{
+    "id": "math_quadratic",
+    "title": "Quadratic Equations - Solving and Graphing",
+    "subject": "Mathematics",
+    "gradeLevel": "Grade 11",
+    "level": "Senior Secondary",
+    "curriculum": "CBC Kenya",
+    "learningArea": "Mathematics",
+    "strand": "Algebra",
+    "substrand": "Quadratic Equations",
+    "competencies": [
+        "Critical thinking and problem solving",
+        "Learning to learn",
+        "Communication and collaboration"
+    ],
+    "learningOutcomes": [
+        "Solve quadratic equations using factoring and formula",
+        "Graph quadratic functions (parabolas)",
+        "Apply quadratic equations to real-world problems",
+        "Determine nature of roots using discriminant"
+    ],
+    "pcis": [
+        "Life Skills: Problem-solving and decision making",
+        "Financial Literacy: Calculating profit/loss scenarios"
+    ],
+    "readingLevel": "9th grade",
+    "originalText": "A quadratic equation is a polynomial equation of degree two, expressed in the standard form ax² + bx + c = 0, where a, b, and c are constants and a ≠ 0. These equations can be solved using various methods including factoring, completing the square, or applying the quadratic formula: x = (-b ± √(b²-4ac)) / 2a. The discriminant, b²-4ac, determines the nature of the roots: positive yields two real solutions, zero yields one real solution, and negative yields two complex solutions.",
+    "simplifiedText": "**Mlinganyo wa Quadratic (Quadratic Equations)**\n\n📐 A quadratic equation has **x²** as the highest power.\n\n**Standard Form:**\nax² + bx + c = 0\n\n- **a** = coefficient of x²\n- **b** = coefficient of x\n- **c** = constant\n- **a ≠ 0** (if a = 0, it's not quadratic!)\n\n**Example:** x² + 5x + 6 = 0\n- a = 1, b = 5, c = 6\n\n**Method 1: Factoring (Kuchambua)**\n\nBreak the equation into two brackets:\n\n**Steps:**\n1. Find two numbers that:\n   - Multiply to give **c** (constant)\n   - Add to give **b** (coefficient of x)\n\n**Example: x² + 5x + 6 = 0**\n- Need: Two numbers that multiply to 6 and add to 5\n- Answer: 2 and 3 (2 × 3 = 6, 2 + 3 = 5)\n- Factored: (x + 2)(x + 3) = 0\n- Solutions: x = -2 or x = -3 ✓\n\n**Method 2: Quadratic Formula**\n\n$$x = \\frac{-b ± \\sqrt{b²-4ac}}{2a}$$\n\nThis formula ALWAYS works!\n\n**Example: x² + 5x + 6 = 0**\n- a = 1, b = 5, c = 6\n- x = (-5 ± √(25-24)) / 2\n- x = (-5 ± √1) / 2\n- x = (-5 ± 1) / 2\n- x = -4/2 = -2 OR x = -6/2 = -3 ✓\n\n**The Discriminant (Kibaguzi):**\n\n**D = b² - 4ac**\n\n- If D > 0: **Two different real roots**\n- If D = 0: **One repeated real root**\n- If D < 0: **No real roots** (imaginary)\n\n**Example:**\nx² + 5x + 6 = 0\nD = 5² - 4(1)(6) = 25 - 24 = 1 > 0\n✓ Two different real roots!\n\n**Graphing Quadratics (Parabola):**\n\nQuadratic equations form a **U-shaped curve** called a parabola.\n\n**Key Features:**\n- **Vertex:** Turning point (highest or lowest)\n- **Axis of Symmetry:** Line through vertex (x = -b/2a)\n- **Roots/Zeros:** Where graph crosses x-axis\n- **Y-intercept:** Where graph crosses y-axis (at x=0, y=c)\n\n**If a > 0:** Opens upward ∪ (happy face)\n**If a < 0:** Opens downward ∩ (sad face)\n\n**Real-Life Applications in Kenya:**\n\n🌾 **Farming:** Maximizing crop yield\n- Profit = Revenue - Cost\n- P = -x² + 100x - 1000\n- Find x for maximum profit!\n\n🏢 **Business:** Calculating profit/loss\n- A matatu business: P = -2x² + 40x - 50\n- Where x = number of trips\n- Find optimal trips for max profit\n\n⚽ **Sports:** Trajectory of a ball\n- Height: h = -5t² + 20t + 1\n- Find maximum height\n- Find when ball hits ground (h = 0)\n\n🏗️ **Construction:** Designing arched gates\n- Parabolic arch equations\n\n**Practice Problems:**\n\n**Problem 1:** Solve x² - 7x + 12 = 0\n\n**Solution (Factoring):**\n- Find two numbers: multiply to 12, add to -7\n- Numbers: -3 and -4\n- (x - 3)(x - 4) = 0\n- x = 3 or x = 4 ✓\n\n**Problem 2:** Solve 2x² + 3x - 2 = 0\n\n**Solution (Formula):**\n- a = 2, b = 3, c = -2\n- D = 9 - 4(2)(-2) = 9 + 16 = 25\n- x = (-3 ± √25) / 4\n- x = (-3 ± 5) / 4\n- x = 2/4 = 0.5 OR x = -8/4 = -2 ✓",
+    "keyTakeaways": [
+        "Quadratic equations have x² as the highest power",
+        "Two methods: Factoring and Quadratic Formula",
+        "The graph is always a parabola (U-shaped curve)",
+        "Discriminant tells you the nature of roots",
+        "Used in business, farming, sports, and construction in Kenya"
+    ],
+    "visualAids": [
+        {
+            "type": "graph",
+            "title": "Parabola: y = x² + 5x + 6",
+            "description": "U-shaped curve opening upward, crossing x-axis at x = -2 and x = -3 (the roots). Vertex at (-2.5, -0.25). Y-intercept at (0, 6). Show axis of symmetry as dashed line at x = -2.5",
+            "imagePath": "parabola_graph.png"
+        },
+        {
+            "type": "diagram",
+            "title": "Factoring Steps Visual",
+            "description": "Step-by-step flowchart: Start with x² + 5x + 6 → Box showing 'Find two numbers' → 2 and 3 in circles → Arrow to (x + 2)(x + 3) = 0 → Final answers x = -2 or x = -3 in boxes",
+            "imagePath": "factoring_steps.png"
+        },
+        {
+            "type": "infographic",
+            "title": "Quadratic Formula Breakdown",
+            "description": "Color-coded formula with arrows: x = (-b in red ± √(b²-4ac in blue)) / (2a in green). Show example with actual numbers plugged in below. Include discriminant box explaining D = b² - 4ac",
+            "imagePath": "formula_guide.png"
+        }
+    ],
+    "quiz": [
+        {
+            "question": "What shape does a quadratic equation make when graphed?",
+            "options": [
+                "Circle",
+                "Straight line",
+                "Parabola (U-shape)",
+                "Triangle"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Quadratic equations always make a U-shaped curve called a parabola."
+        },
+        {
+            "question": "If the discriminant D = b² - 4ac = 0, how many roots are there?",
+            "options": [
+                "No roots",
+                "One repeated root",
+                "Two different roots",
+                "Three roots"
+            ],
+            "correctAnswer": 1,
+            "explanation": "When D = 0, there is one repeated real root (the parabola touches the x-axis at one point)."
+        },
+        {
+            "question": "Solve: x² - 9 = 0",
+            "options": [
+                "x = 3 only",
+                "x = -3 only",
+                "x = 3 or x = -3",
+                "No solution"
+            ],
+            "correctAnswer": 2,
+            "explanation": "x² = 9, so x = ±√9 = ±3. Two solutions: x = 3 or x = -3"
+        }
+    ],
+    "estimatedReadTime": "10 minutes",
+    "difficulty": "Intermediate",
+    "ageRange": "16-18 years",
+    "cbc_assessment": "ME (Meeting Expectations) - Learner can solve quadratic equations using factoring and formula, graph parabolas, and apply to real-world problems"
+}
