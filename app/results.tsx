@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Alert, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, Platform, TouchableOpacity, Clipboard } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
@@ -27,6 +27,9 @@ export default function ResultsScreen() {
 
   // Tab navigation state
   const [activeTab, setActiveTab] = useState<TabType>('text');
+
+  // Text tab state
+  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
 
   // Audio controls state
   const [voices, setVoices] = useState<Voice[]>([]);
@@ -122,6 +125,144 @@ export default function ResultsScreen() {
     Alert.alert('Share', 'Sharing functionality will be implemented in the next version with expo-sharing.');
   };
 
+  const handleCopyText = () => {
+    Clipboard.setString(simplifiedText);
+    Alert.alert('✅ Copied!', 'Text copied to clipboard');
+  };
+
+  const getFontSizeMultiplier = () => {
+    switch (fontSize) {
+      case 'small': return 0.85;
+      case 'large': return 1.15;
+      default: return 1;
+    }
+  };
+
+  const getMarkdownStyles = () => {
+    const multiplier = getFontSizeMultiplier();
+    return {
+      body: {
+        fontSize: 16 * multiplier,
+        lineHeight: 26 * multiplier,
+        color: colors.text,
+      },
+      heading1: {
+        fontSize: 24 * multiplier,
+        fontWeight: 'bold' as const,
+        color: colors.primary,
+        marginTop: 20,
+        marginBottom: 12,
+      },
+      heading2: {
+        fontSize: 20 * multiplier,
+        fontWeight: 'bold' as const,
+        color: colors.primary,
+        marginTop: 16,
+        marginBottom: 10,
+      },
+      heading3: {
+        fontSize: 18 * multiplier,
+        fontWeight: '600' as const,
+        color: colors.text,
+        marginTop: 12,
+        marginBottom: 8,
+      },
+      paragraph: {
+        marginBottom: 12,
+        lineHeight: 24 * multiplier,
+      },
+      strong: {
+        fontWeight: 'bold' as const,
+        color: colors.primary,
+      },
+      em: {
+        fontStyle: 'italic' as const,
+      },
+      bullet_list: {
+        marginBottom: 12,
+      },
+      ordered_list: {
+        marginBottom: 12,
+      },
+      list_item: {
+        marginBottom: 6,
+        flexDirection: 'row' as const,
+      },
+      bullet_list_icon: {
+        color: colors.primary,
+        fontSize: 16 * multiplier,
+        marginRight: 8,
+      },
+      ordered_list_icon: {
+        color: colors.primary,
+        fontSize: 16 * multiplier,
+        marginRight: 8,
+      },
+      code_inline: {
+        backgroundColor: '#f0f0f0',
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 4,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        fontSize: 14 * multiplier,
+      },
+      code_block: {
+        backgroundColor: '#f0f0f0',
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 12,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        fontSize: 14 * multiplier,
+      },
+      fence: {
+        backgroundColor: '#f0f0f0',
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 12,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        fontSize: 14 * multiplier,
+      },
+      blockquote: {
+        backgroundColor: '#f9f9f9',
+        borderLeftWidth: 4,
+        borderLeftColor: colors.primary,
+        paddingLeft: 12,
+        paddingVertical: 8,
+        marginBottom: 12,
+        fontStyle: 'italic' as const,
+      },
+      hr: {
+        backgroundColor: '#e0e0e0',
+        height: 1,
+        marginVertical: 16,
+      },
+      link: {
+        color: colors.primary,
+        textDecorationLine: 'underline' as const,
+      },
+      table: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        marginBottom: 12,
+      },
+      thead: {
+        backgroundColor: '#f5f5f5',
+      },
+      th: {
+        fontWeight: 'bold' as const,
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#ddd',
+      },
+      td: {
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#ddd',
+      },
+    };
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -178,8 +319,33 @@ export default function ResultsScreen() {
         {/* Text Tab */}
         {activeTab === 'text' && (
           <View>
+            {/* Font Size Controls */}
+            <View style={styles.fontSizeControls}>
+              <Text style={styles.controlsLabel}>Text Size:</Text>
+              <View style={styles.fontSizeButtons}>
+                <TouchableOpacity
+                  style={[styles.fontSizeButton, fontSize === 'small' && styles.fontSizeButtonActive]}
+                  onPress={() => setFontSize('small')}
+                >
+                  <Text style={[styles.fontSizeButtonText, fontSize === 'small' && styles.fontSizeButtonTextActive]}>A-</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.fontSizeButton, fontSize === 'medium' && styles.fontSizeButtonActive]}
+                  onPress={() => setFontSize('medium')}
+                >
+                  <Text style={[styles.fontSizeButtonText, fontSize === 'medium' && styles.fontSizeButtonTextActive]}>A</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.fontSizeButton, fontSize === 'large' && styles.fontSizeButtonActive]}
+                  onPress={() => setFontSize('large')}
+                >
+                  <Text style={[styles.fontSizeButtonText, fontSize === 'large' && styles.fontSizeButtonTextActive]}>A+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
             <View style={styles.card}>
-              <Markdown style={markdownStyles}>
+              <Markdown style={getMarkdownStyles()}>
                 {simplifiedText}
               </Markdown>
             </View>
@@ -187,10 +353,7 @@ export default function ResultsScreen() {
             <View style={styles.actions}>
               <Button
                 title="📋 Copy Text"
-                onPress={() => {
-                  // TODO: Implement clipboard copy
-                  Alert.alert('Copy', 'Text copied to clipboard!');
-                }}
+                onPress={handleCopyText}
                 style={{ backgroundColor: colors.secondary }}
               />
               <Button
@@ -367,6 +530,51 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  fontSizeControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.surface,
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 15,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  controlsLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  fontSizeButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  fontSizeButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  fontSizeButtonActive: {
+    backgroundColor: colors.primary + '20',
+    borderColor: colors.primary,
+  },
+  fontSizeButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
+  fontSizeButtonTextActive: {
+    color: colors.primary,
+  },
   card: {
     backgroundColor: colors.surface,
     padding: 20,
@@ -493,126 +701,3 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
-
-// Markdown styling
-const markdownStyles = {
-  body: {
-    fontSize: 16,
-    lineHeight: 26,
-    color: colors.text,
-  },
-  heading1: {
-    fontSize: 24,
-    fontWeight: 'bold' as const,
-    color: colors.primary,
-    marginTop: 20,
-    marginBottom: 12,
-  },
-  heading2: {
-    fontSize: 20,
-    fontWeight: 'bold' as const,
-    color: colors.primary,
-    marginTop: 16,
-    marginBottom: 10,
-  },
-  heading3: {
-    fontSize: 18,
-    fontWeight: '600' as const,
-    color: colors.text,
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  paragraph: {
-    marginBottom: 12,
-    lineHeight: 24,
-  },
-  strong: {
-    fontWeight: 'bold' as const,
-    color: colors.primary,
-  },
-  em: {
-    fontStyle: 'italic' as const,
-  },
-  bullet_list: {
-    marginBottom: 12,
-  },
-  ordered_list: {
-    marginBottom: 12,
-  },
-  list_item: {
-    marginBottom: 6,
-    flexDirection: 'row' as const,
-  },
-  bullet_list_icon: {
-    color: colors.primary,
-    fontSize: 16,
-    marginRight: 8,
-  },
-  ordered_list_icon: {
-    color: colors.primary,
-    fontSize: 16,
-    marginRight: 8,
-  },
-  code_inline: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    fontSize: 14,
-  },
-  code_block: {
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    fontSize: 14,
-  },
-  fence: {
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    fontSize: 14,
-  },
-  blockquote: {
-    backgroundColor: '#f9f9f9',
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-    paddingLeft: 12,
-    paddingVertical: 8,
-    marginBottom: 12,
-    fontStyle: 'italic' as const,
-  },
-  hr: {
-    backgroundColor: '#e0e0e0',
-    height: 1,
-    marginVertical: 16,
-  },
-  link: {
-    color: colors.primary,
-    textDecorationLine: 'underline' as const,
-  },
-  table: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    marginBottom: 12,
-  },
-  thead: {
-    backgroundColor: '#f5f5f5',
-  },
-  th: {
-    fontWeight: 'bold' as const,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  td: {
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-};
