@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { colors } from '../src/theme/colors';
 import { processDocument, DocumentProcessingResult, AIProcessingError } from '../src/ai';
 import { Button } from '../src/components/Button';
+import ProcessingAnimation from '../src/components/processing/ProcessingAnimation';
 
 type ProcessingState = 'idle' | 'processing' | 'success' | 'error';
 
@@ -15,6 +16,29 @@ export default function ReaderScreen() {
   const [state, setState] = useState<ProcessingState>('idle');
   const [result, setResult] = useState<DocumentProcessingResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [fileName, setFileName] = useState('');
+  const [fileType, setFileType] = useState('');
+
+  // Extract filename and type from URI
+  useEffect(() => {
+    if (uri) {
+      const decodedUri = decodeURIComponent(uri);
+      const name = decodedUri.split('/').pop() || 'Unknown Document';
+      setFileName(name);
+      
+      // Determine file type
+      if (name.toLowerCase().endsWith('.pdf')) {
+        setFileType('PDF Document');
+      } else if (name.match(/\.(jpg|jpeg|png|gif|bmp)$/i)) {
+        setFileType('Image');
+      } else if (name.toLowerCase().endsWith('.txt')) {
+        setFileType('Text Document');
+      } else {
+        setFileType('Document');
+      }
+    }
+  }, [uri]);
 
   useEffect(() => {
     if (uri && state === 'idle') {
@@ -27,9 +51,25 @@ export default function ReaderScreen() {
     
     setState('processing');
     setError(null);
+    setCurrentStep(1); // Start with step 1
 
     try {
+      // Step 1: Extracting text
+      setCurrentStep(1);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Step 2: Simplifying content
+      setCurrentStep(2);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Step 3: Generating audio
+      setCurrentStep(3);
       const processingResult = await processDocument(uri); // <-- Process document using AI
+      
+      // Step 4: Creating visuals
+      setCurrentStep(4);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setResult(processingResult);
       setState('success');
     } catch (err) {
@@ -58,18 +98,34 @@ export default function ReaderScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Document Processing</Text>
-      <Text style={styles.uriText}>📄 {uri || 'No file selected'}</Text>
+      {state !== 'processing' && (
+        <>
+          <Text style={styles.header}>Document Processing</Text>
+          <View style={styles.fileInfoCard}>
+            <Text style={styles.fileIcon}>
+              {fileType.includes('PDF') ? '📄' : fileType.includes('Image') ? '🖼️' : '📝'}
+            </Text>
+            <View style={styles.fileDetails}>
+              <Text style={styles.fileName} numberOfLines={2}>{fileName || 'No file selected'}</Text>
+              <Text style={styles.fileType}>{fileType}</Text>
+            </View>
+          </View>
+        </>
+      )}
 
-      {/* Processing State */}
+      {/* Processing State with Animation */}
       {state === 'processing' && (
-        <View style={styles.processingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.processingText}>Processing your document...</Text>
-          <Text style={styles.processingSubtext}>
-            Extracting, simplifying, and generating accessible content
-          </Text>
-        </View>
+        <ProcessingAnimation 
+          currentStep={currentStep}
+          onComplete={() => {
+            // Animation complete, proceed to results
+            setTimeout(() => {
+              if (result) {
+                handleViewResults();
+              }
+            }, 500);
+          }}
+        />
       )}
 
       {/* Success State */}
@@ -163,11 +219,36 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: colors.text,
   },
-  uriText: {
-    fontSize: 14,
-    color: colors.text,
+  fileInfoCard: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    padding: 16,
+    borderRadius: 12,
     marginBottom: 20,
-    fontStyle: 'italic',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  fileIcon: {
+    fontSize: 40,
+    marginRight: 12,
+  },
+  fileDetails: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  fileName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  fileType: {
+    fontSize: 12,
+    color: colors.text,
+    opacity: 0.6,
   },
   // Processing states
   processingContainer: {
