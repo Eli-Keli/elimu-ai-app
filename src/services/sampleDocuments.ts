@@ -70,6 +70,56 @@ const historyPrecolonialContent = require('../../assets/samples/history_precolon
 const kiswahiliContent = require('../../assets/samples/kiswahili_uandishi/content.json') as SampleContent;
 const geographyEastAfricaContent = require('../../assets/samples/geography_east_africa/content.json') as SampleContent;
 
+// Import all images statically (React Native doesn't support dynamic require)
+const biology_cell_structure = require('../../assets/samples/biology_cells/cell_structure.png');
+const biology_cell_comparison = require('../../assets/samples/biology_cells/cell_comparison.png');
+const biology_cell_analogy = require('../../assets/samples/biology_cells/cell_analogy.png');
+
+const chemistry_atom_structure = require('../../assets/samples/chemistry_atoms/atom_structure.png');
+const chemistry_electron_transfer = require('../../assets/samples/chemistry_atoms/electron_transfer.png');
+
+const math_parabola_graph = require('../../assets/samples/math_quadratic/parabola_graph.png');
+const math_factoring_steps = require('../../assets/samples/math_quadratic/factoring_steps.png');
+const math_formula_guide = require('../../assets/samples/math_quadratic/formula_guide.png');
+
+const physics_three_laws = require('../../assets/samples/physics_motion/three_laws.png');
+const physics_action_reaction = require('../../assets/samples/physics_motion/action_reaction_kenya.png');
+
+const history_community_map = require('../../assets/samples/history_precolonial_kenya/community_map.png');
+const history_trade_routes = require('../../assets/samples/history_precolonial_kenya/trade_routes.png');
+const history_language_groups = require('../../assets/samples/history_precolonial_kenya/language_groups.png');
+
+const kiswahili_essay_structure = require('../../assets/samples/kiswahili_uandishi/essay_structure.png');
+const kiswahili_essay_types = require('../../assets/samples/kiswahili_uandishi/essay_types.png');
+const kiswahili_writing_process = require('../../assets/samples/kiswahili_uandishi/writing_process.png');
+
+const geography_features_importance = require('../../assets/samples/geography_east_africa/features_importance.png');
+const geography_normal_crust = require('../../assets/samples/geography_east_africa/normal_crust.png');
+const geography_faults_form = require('../../assets/samples/geography_east_africa/faults_form.png');
+
+// Map image paths to actual image modules
+const IMAGE_MAP: { [key: string]: any } = {
+    'biology_cells/cell_structure.png': biology_cell_structure,
+    'biology_cells/cell_comparison.png': biology_cell_comparison,
+    'biology_cells/cell_analogy.png': biology_cell_analogy,
+    'chemistry_atoms/atom_structure.png': chemistry_atom_structure,
+    'chemistry_atoms/electron_transfer.png': chemistry_electron_transfer,
+    'math_quadratic/parabola_graph.png': math_parabola_graph,
+    'math_quadratic/factoring_steps.png': math_factoring_steps,
+    'math_quadratic/formula_guide.png': math_formula_guide,
+    'physics_motion/three_laws.png': physics_three_laws,
+    'physics_motion/action_reaction_kenya.png': physics_action_reaction,
+    'history_precolonial_kenya/community_map.png': history_community_map,
+    'history_precolonial_kenya/trade_routes.png': history_trade_routes,
+    'history_precolonial_kenya/language_groups.png': history_language_groups,
+    'kiswahili_uandishi/essay_structure.png': kiswahili_essay_structure,
+    'kiswahili_uandishi/essay_types.png': kiswahili_essay_types,
+    'kiswahili_uandishi/writing_process.png': kiswahili_writing_process,
+    'geography_east_africa/features_importance.png': geography_features_importance,
+    'geography_east_africa/normal_crust.png': geography_normal_crust,
+    'geography_east_africa/faults_form.png': geography_faults_form,
+};
+
 /**
  * Sample Documents Library
  * 
@@ -90,7 +140,7 @@ export const SAMPLE_DOCUMENTS: SampleDocument[] = [
             ...biologyCellsContent,
             visualAids: biologyCellsContent.visualAids.map(aid => ({
                 ...aid,
-                uri: require(`../../assets/samples/biology_cells/${aid.imagePath}`),
+                uri: IMAGE_MAP[`biology_cells/${aid.imagePath}`],
             }))
         }
     },
@@ -104,7 +154,7 @@ export const SAMPLE_DOCUMENTS: SampleDocument[] = [
             ...historyPrecolonialContent,
             visualAids: historyPrecolonialContent.visualAids.map(aid => ({
                 ...aid,
-                uri: require(`../../assets/samples/history_precolonial_kenya/${aid.imagePath}`),
+                uri: IMAGE_MAP[`history_precolonial_kenya/${aid.imagePath}`],
             }))
         }
     },
@@ -118,7 +168,7 @@ export const SAMPLE_DOCUMENTS: SampleDocument[] = [
             ...geographyEastAfricaContent,
             visualAids: geographyEastAfricaContent.visualAids.map(aid => ({
                 ...aid,
-                uri: require(`../../assets/samples/geography_east_africa/${aid.imagePath}`),
+                uri: IMAGE_MAP[`geography_east_africa/${aid.imagePath}`],
             }))
         }
     },
@@ -132,7 +182,7 @@ export const SAMPLE_DOCUMENTS: SampleDocument[] = [
             ...kiswahiliContent,
             visualAids: kiswahiliContent.visualAids.map(aid => ({
                 ...aid,
-                uri: require(`../../assets/samples/kiswahili_uandishi/${aid.imagePath}`),
+                uri: IMAGE_MAP[`kiswahili_uandishi/${aid.imagePath}`],
             }))
         }
     },
@@ -148,7 +198,7 @@ export const SAMPLE_DOCUMENTS: SampleDocument[] = [
             ...chemistryAtomsContent,
             visualAids: chemistryAtomsContent.visualAids.map(aid => ({
                 ...aid,
-                uri: require(`../../assets/samples/chemistry_atoms/${aid.imagePath}`),
+                uri: IMAGE_MAP[`chemistry_atoms/${aid.imagePath}`],
             }))
         }
     },
@@ -162,7 +212,7 @@ export const SAMPLE_DOCUMENTS: SampleDocument[] = [
             ...physicsMotionContent,
             visualAids: physicsMotionContent.visualAids.map(aid => ({
                 ...aid,
-                uri: require(`../../assets/samples/physics_motion/${aid.imagePath}`),
+                uri: IMAGE_MAP[`physics_motion/${aid.imagePath}`],
             }))
         }
     },
@@ -176,7 +226,7 @@ export const SAMPLE_DOCUMENTS: SampleDocument[] = [
             ...mathQuadraticContent,
             visualAids: mathQuadraticContent.visualAids.map(aid => ({
                 ...aid,
-                uri: require(`../../assets/samples/math_quadratic/${aid.imagePath}`),
+                uri: IMAGE_MAP[`math_quadratic/${aid.imagePath}`],
             }))
         }
     }
