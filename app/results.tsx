@@ -1,13 +1,16 @@
-import { View, Text, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, Platform, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
+import Markdown from 'react-native-markdown-display';
 import { Button } from '../src/components/Button';
 import { colors } from '../src/theme/colors';
 import { getAvailableVoices } from '../src/ai';
 import { speakText, stopSpeech, isSpeaking } from '../src/ai/adapt/audioConvert';
 import type { Voice } from '../src/ai/types';
+
+type TabType = 'text' | 'audio' | 'visuals' | 'study';
 
 export default function ResultsScreen() {
   const router = useRouter();
@@ -21,6 +24,9 @@ export default function ResultsScreen() {
   const simplifiedText = params.text || "This is a simplified summary of the document. It uses simple words and clear sentence structures to make reading easier.";
   const audioUri = params.audioUri;
   const processingTime = params.processingTime;
+
+  // Tab navigation state
+  const [activeTab, setActiveTab] = useState<TabType>('text');
 
   // Audio controls state
   const [voices, setVoices] = useState<Voice[]>([]);
@@ -117,21 +123,93 @@ export default function ResultsScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>📖 Simplified Content</Text>
-
-      {processingTime && (
-        <Text style={styles.metaInfo}>
-          Processed in {(parseInt(processingTime) / 1000).toFixed(2)}s
-        </Text>
-      )}
-
-      <View style={styles.card}>
-        <Text style={styles.content}>{simplifiedText}</Text>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>📖 Results</Text>
+        {processingTime && (
+          <Text style={styles.metaInfo}>
+            Processed in {(parseInt(processingTime) / 1000).toFixed(2)}s
+          </Text>
+        )}
       </View>
 
-      {/* Audio Controls Section */}
-      <View style={styles.audioSection}>
+      {/* Tab Navigation */}
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'text' && styles.activeTab]}
+          onPress={() => setActiveTab('text')}
+        >
+          <Text style={[styles.tabText, activeTab === 'text' && styles.activeTabText]}>
+            📝 Text
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'audio' && styles.activeTab]}
+          onPress={() => setActiveTab('audio')}
+        >
+          <Text style={[styles.tabText, activeTab === 'audio' && styles.activeTabText]}>
+            🔊 Audio
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'visuals' && styles.activeTab]}
+          onPress={() => setActiveTab('visuals')}
+        >
+          <Text style={[styles.tabText, activeTab === 'visuals' && styles.activeTabText]}>
+            📊 Visuals
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'study' && styles.activeTab]}
+          onPress={() => setActiveTab('study')}
+        >
+          <Text style={[styles.tabText, activeTab === 'study' && styles.activeTabText]}>
+            📚 Study
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Tab Content */}
+      <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+        {/* Text Tab */}
+        {activeTab === 'text' && (
+          <View>
+            <View style={styles.card}>
+              <Markdown style={markdownStyles}>
+                {simplifiedText}
+              </Markdown>
+            </View>
+
+            <View style={styles.actions}>
+              <Button
+                title="📋 Copy Text"
+                onPress={() => {
+                  // TODO: Implement clipboard copy
+                  Alert.alert('Copy', 'Text copied to clipboard!');
+                }}
+                style={{ backgroundColor: colors.secondary }}
+              />
+              <Button
+                title="💾 Save Summary"
+                onPress={handleSaveSummary}
+                style={{ backgroundColor: colors.secondary }}
+              />
+              <Button
+                title="📤 Share"
+                onPress={handleShare}
+                style={{ backgroundColor: '#4CAF50' }}
+              />
+            </View>
+          </View>
+        )}
+
+        {/* Audio Tab */}
+        {activeTab === 'audio' && (
+          <View style={styles.audioSection}>
         <Text style={styles.sectionHeader}>🔊 Audio Controls</Text>
         
         {/* Voice Selection */}
@@ -178,65 +256,116 @@ export default function ResultsScreen() {
         </View>
 
         {/* Play/Stop Button */}
-        <Button
-          title={isPlaying ? '⏹️ Stop Audio' : '▶️ Play Audio'}
-          onPress={handlePlayAudio}
-          style={isPlaying ? styles.stopButton : styles.playButton}
-        />
+            <Button
+              title={isPlaying ? '⏹️ Stop Audio' : '▶️ Play Audio'}
+              onPress={handlePlayAudio}
+              style={isPlaying ? styles.stopButton : styles.playButton}
+            />
 
-        {/* iOS Silent Mode Warning */}
-        {Platform.OS === 'ios' && (
-          <View style={styles.iosWarning}>
-            <Text style={styles.warningText}>
-              💡 Tip: Make sure your device is not in silent mode to hear audio
+            {/* iOS Silent Mode Warning */}
+            {Platform.OS === 'ios' && (
+              <View style={styles.iosWarning}>
+                <Text style={styles.warningText}>
+                  💡 Tip: Make sure your device is not in silent mode to hear audio
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Visuals Tab */}
+        {activeTab === 'visuals' && (
+          <View style={styles.placeholderContainer}>
+            <Text style={styles.placeholderIcon}>📊</Text>
+            <Text style={styles.placeholderTitle}>Visual Aids</Text>
+            <Text style={styles.placeholderText}>
+              Generated diagrams, mind maps, and infographics will appear here.
+            </Text>
+            <Text style={styles.placeholderSubtext}>
+              This feature displays AI-generated visual aids to help you understand the content better.
             </Text>
           </View>
         )}
-      </View>
 
-      <View style={styles.actions}>
+        {/* Study Tools Tab */}
+        {activeTab === 'study' && (
+          <View style={styles.placeholderContainer}>
+            <Text style={styles.placeholderIcon}>📚</Text>
+            <Text style={styles.placeholderTitle}>Study Tools</Text>
+            <Text style={styles.placeholderText}>
+              Interactive flashcards, quizzes, and study notes will be available here.
+            </Text>
+            <Text style={styles.placeholderSubtext}>
+              Generate flashcards and take quizzes to test your understanding of the content.
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+
+      {/* Footer Actions */}
+      <View style={styles.footer}>
         <Button
-          title="Save Summary"
-          onPress={handleSaveSummary}
-          style={{ backgroundColor: colors.secondary }}
-        />
-        <Button
-          title="Share"
-          onPress={handleShare}
-          style={{ backgroundColor: '#4CAF50' }}
-        />
-        <Button
-          title="Back to Home"
+          title="🏠 Back to Home"
           onPress={() => router.push('/')}
           style={{ backgroundColor: '#757575' }}
         />
       </View>
-
-      <View style={styles.accessibilityNote}>
-        <Text style={styles.noteText}>
-          ♿ This content has been optimized for accessibility
-        </Text>
-      </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 20,
+    flex: 1,
+    backgroundColor: colors.background,
   },
   header: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 15,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: colors.text,
+    marginBottom: 5,
   },
   metaInfo: {
+    fontSize: 12,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  activeTab: {
+    borderBottomColor: colors.primary,
+  },
+  tabText: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 20,
-    fontStyle: 'italic',
+    fontWeight: '500',
+  },
+  activeTabText: {
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  tabContent: {
+    flex: 1,
+    padding: 20,
   },
   card: {
     backgroundColor: colors.surface,
@@ -325,18 +454,165 @@ const styles = StyleSheet.create({
   },
   actions: {
     gap: 10,
-  },
-  accessibilityNote: {
     marginTop: 20,
-    padding: 15,
-    backgroundColor: '#E8F5E9',
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: '#4CAF50',
   },
-  noteText: {
+  footer: {
+    padding: 20,
+    paddingBottom: 30,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+  },
+  placeholderContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 30,
+  },
+  placeholderIcon: {
+    fontSize: 64,
+    marginBottom: 20,
+  },
+  placeholderTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 12,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: 12,
+    lineHeight: 24,
+  },
+  placeholderSubtext: {
     fontSize: 14,
-    color: '#2E7D32',
-    fontStyle: 'italic',
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });
+
+// Markdown styling
+const markdownStyles = {
+  body: {
+    fontSize: 16,
+    lineHeight: 26,
+    color: colors.text,
+  },
+  heading1: {
+    fontSize: 24,
+    fontWeight: 'bold' as const,
+    color: colors.primary,
+    marginTop: 20,
+    marginBottom: 12,
+  },
+  heading2: {
+    fontSize: 20,
+    fontWeight: 'bold' as const,
+    color: colors.primary,
+    marginTop: 16,
+    marginBottom: 10,
+  },
+  heading3: {
+    fontSize: 18,
+    fontWeight: '600' as const,
+    color: colors.text,
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  paragraph: {
+    marginBottom: 12,
+    lineHeight: 24,
+  },
+  strong: {
+    fontWeight: 'bold' as const,
+    color: colors.primary,
+  },
+  em: {
+    fontStyle: 'italic' as const,
+  },
+  bullet_list: {
+    marginBottom: 12,
+  },
+  ordered_list: {
+    marginBottom: 12,
+  },
+  list_item: {
+    marginBottom: 6,
+    flexDirection: 'row' as const,
+  },
+  bullet_list_icon: {
+    color: colors.primary,
+    fontSize: 16,
+    marginRight: 8,
+  },
+  ordered_list_icon: {
+    color: colors.primary,
+    fontSize: 16,
+    marginRight: 8,
+  },
+  code_inline: {
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    fontSize: 14,
+  },
+  code_block: {
+    backgroundColor: '#f0f0f0',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    fontSize: 14,
+  },
+  fence: {
+    backgroundColor: '#f0f0f0',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    fontSize: 14,
+  },
+  blockquote: {
+    backgroundColor: '#f9f9f9',
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+    paddingLeft: 12,
+    paddingVertical: 8,
+    marginBottom: 12,
+    fontStyle: 'italic' as const,
+  },
+  hr: {
+    backgroundColor: '#e0e0e0',
+    height: 1,
+    marginVertical: 16,
+  },
+  link: {
+    color: colors.primary,
+    textDecorationLine: 'underline' as const,
+  },
+  table: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    marginBottom: 12,
+  },
+  thead: {
+    backgroundColor: '#f5f5f5',
+  },
+  th: {
+    fontWeight: 'bold' as const,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  td: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+};
