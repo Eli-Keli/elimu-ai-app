@@ -5,7 +5,9 @@ import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
 import Markdown from 'react-native-markdown-display';
 import { Button } from '../src/components/Button';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/contexts/ThemeContext';
+import { useFontSize } from '../src/contexts/FontSizeContext';
+import { useLanguage } from '../src/contexts/LanguageContext';
 import { getAvailableVoices } from '../src/ai';
 import { speakText, stopSpeech, isSpeaking } from '../src/ai/adapt/audioConvert';
 import type { Voice } from '../src/ai/types';
@@ -14,6 +16,10 @@ type TabType = 'text' | 'audio' | 'visuals' | 'study';
 
 export default function ResultsScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const { getScaledSize, getFontMultiplier } = useFontSize();
+  const { t } = useLanguage();
+  
   const params = useLocalSearchParams<{
     text?: string;
     audioUri?: string;
@@ -27,9 +33,6 @@ export default function ResultsScreen() {
 
   // Tab navigation state
   const [activeTab, setActiveTab] = useState<TabType>('text');
-
-  // Text tab state
-  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
 
   // Audio controls state
   const [voices, setVoices] = useState<Voice[]>([]);
@@ -127,43 +130,35 @@ export default function ResultsScreen() {
 
   const handleCopyText = () => {
     Clipboard.setString(simplifiedText);
-    Alert.alert('✅ Copied!', 'Text copied to clipboard');
-  };
-
-  const getFontSizeMultiplier = () => {
-    switch (fontSize) {
-      case 'small': return 0.85;
-      case 'large': return 1.15;
-      default: return 1;
-    }
+    Alert.alert(t('results.copied'), t('results.copiedMessage'));
   };
 
   const getMarkdownStyles = () => {
-    const multiplier = getFontSizeMultiplier();
+    const multiplier = getFontMultiplier();
     return {
       body: {
         fontSize: 16 * multiplier,
         lineHeight: 26 * multiplier,
-        color: colors.text,
+        
       },
       heading1: {
         fontSize: 24 * multiplier,
         fontWeight: 'bold' as const,
-        color: colors.primary,
+        
         marginTop: 20,
         marginBottom: 12,
       },
       heading2: {
         fontSize: 20 * multiplier,
         fontWeight: 'bold' as const,
-        color: colors.primary,
+        
         marginTop: 16,
         marginBottom: 10,
       },
       heading3: {
         fontSize: 18 * multiplier,
         fontWeight: '600' as const,
-        color: colors.text,
+        
         marginTop: 12,
         marginBottom: 8,
       },
@@ -173,7 +168,7 @@ export default function ResultsScreen() {
       },
       strong: {
         fontWeight: 'bold' as const,
-        color: colors.primary,
+        
       },
       em: {
         fontStyle: 'italic' as const,
@@ -189,17 +184,17 @@ export default function ResultsScreen() {
         flexDirection: 'row' as const,
       },
       bullet_list_icon: {
-        color: colors.primary,
+        
         fontSize: 16 * multiplier,
         marginRight: 8,
       },
       ordered_list_icon: {
-        color: colors.primary,
+        
         fontSize: 16 * multiplier,
         marginRight: 8,
       },
       code_inline: {
-        backgroundColor: '#f0f0f0',
+        
         paddingHorizontal: 6,
         paddingVertical: 2,
         borderRadius: 4,
@@ -237,7 +232,7 @@ export default function ResultsScreen() {
         marginVertical: 16,
       },
       link: {
-        color: colors.primary,
+        
         textDecorationLine: 'underline' as const,
       },
       table: {
@@ -264,52 +259,54 @@ export default function ResultsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>📖 Results</Text>
+      <View style={[styles.header, {  borderBottomColor: colors.border }]}>
+        <Text style={[styles.headerTitle, {  fontSize: getScaledSize(24) }]}>
+          📖 {t('results.title')}
+        </Text>
         {processingTime && (
-          <Text style={styles.metaInfo}>
+          <Text style={[styles.metaInfo, {  fontSize: getScaledSize(12) }]}>
             Processed in {(parseInt(processingTime) / 1000).toFixed(2)}s
           </Text>
         )}
       </View>
 
       {/* Tab Navigation */}
-      <View style={styles.tabBar}>
+      <View style={[styles.tabBar, { backgroundColor: colors.card }]}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'text' && styles.activeTab]}
+          style={[styles.tab, activeTab === 'text' && { ...styles.activeTab, borderBottomColor: colors.primary }]}
           onPress={() => setActiveTab('text')}
         >
-          <Text style={[styles.tabText, activeTab === 'text' && styles.activeTabText]}>
-            📝 Text
+          <Text style={[styles.tabText, {  fontSize: getScaledSize(14) }, activeTab === 'text' && { color: colors.primary }]}>
+            📝 {t('results.text')}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'audio' && styles.activeTab]}
+          style={[styles.tab, activeTab === 'audio' && { ...styles.activeTab, borderBottomColor: colors.primary }]}
           onPress={() => setActiveTab('audio')}
         >
-          <Text style={[styles.tabText, activeTab === 'audio' && styles.activeTabText]}>
-            🔊 Audio
+          <Text style={[styles.tabText, {  fontSize: getScaledSize(14) }, activeTab === 'audio' && { color: colors.primary }]}>
+            🔊 {t('results.audio')}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'visuals' && styles.activeTab]}
+          style={[styles.tab, activeTab === 'visuals' && { ...styles.activeTab, borderBottomColor: colors.primary }]}
           onPress={() => setActiveTab('visuals')}
         >
-          <Text style={[styles.tabText, activeTab === 'visuals' && styles.activeTabText]}>
-            📊 Visuals
+          <Text style={[styles.tabText, {  fontSize: getScaledSize(14) }, activeTab === 'visuals' && { color: colors.primary }]}>
+            📊 {t('results.visuals')}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'study' && styles.activeTab]}
+          style={[styles.tab, activeTab === 'study' && { ...styles.activeTab, borderBottomColor: colors.primary }]}
           onPress={() => setActiveTab('study')}
         >
-          <Text style={[styles.tabText, activeTab === 'study' && styles.activeTabText]}>
-            📚 Study
+          <Text style={[styles.tabText, {  fontSize: getScaledSize(14) }, activeTab === 'study' && { color: colors.primary }]}>
+            📚 {t('results.study')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -319,32 +316,7 @@ export default function ResultsScreen() {
         {/* Text Tab */}
         {activeTab === 'text' && (
           <View>
-            {/* Font Size Controls */}
-            <View style={styles.fontSizeControls}>
-              <Text style={styles.controlsLabel}>Text Size:</Text>
-              <View style={styles.fontSizeButtons}>
-                <TouchableOpacity
-                  style={[styles.fontSizeButton, fontSize === 'small' && styles.fontSizeButtonActive]}
-                  onPress={() => setFontSize('small')}
-                >
-                  <Text style={[styles.fontSizeButtonText, fontSize === 'small' && styles.fontSizeButtonTextActive]}>A-</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.fontSizeButton, fontSize === 'medium' && styles.fontSizeButtonActive]}
-                  onPress={() => setFontSize('medium')}
-                >
-                  <Text style={[styles.fontSizeButtonText, fontSize === 'medium' && styles.fontSizeButtonTextActive]}>A</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.fontSizeButton, fontSize === 'large' && styles.fontSizeButtonActive]}
-                  onPress={() => setFontSize('large')}
-                >
-                  <Text style={[styles.fontSizeButtonText, fontSize === 'large' && styles.fontSizeButtonTextActive]}>A+</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.card}>
+            <View style={[styles.card, { backgroundColor: colors.card }]}>
               <Markdown style={getMarkdownStyles()}>
                 {simplifiedText}
               </Markdown>
@@ -352,17 +324,17 @@ export default function ResultsScreen() {
 
             <View style={styles.actions}>
               <Button
-                title="📋 Copy Text"
+                title={`📋 ${t('results.copy')}`}
                 onPress={handleCopyText}
                 style={{ backgroundColor: colors.secondary }}
               />
               <Button
-                title="💾 Save Summary"
+                title={`💾 ${t('results.save')}`}
                 onPress={handleSaveSummary}
                 style={{ backgroundColor: colors.secondary }}
               />
               <Button
-                title="📤 Share"
+                title={`📤 ${t('results.share')}`}
                 onPress={handleShare}
                 style={{ backgroundColor: '#4CAF50' }}
               />
@@ -480,20 +452,20 @@ export default function ResultsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    
   },
   header: {
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 15,
-    backgroundColor: colors.surface,
+    
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
+    
     marginBottom: 5,
   },
   metaInfo: {
@@ -503,7 +475,7 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
+    
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
@@ -515,7 +487,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   activeTab: {
-    borderBottomColor: colors.primary,
+    
   },
   tabText: {
     fontSize: 14,
@@ -523,7 +495,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeTabText: {
-    color: colors.primary,
+    
     fontWeight: '700',
   },
   tabContent: {
@@ -534,7 +506,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.surface,
+    
     padding: 12,
     borderRadius: 10,
     marginBottom: 15,
@@ -547,7 +519,7 @@ const styles = StyleSheet.create({
   controlsLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.text,
+    
   },
   fontSizeButtons: {
     flexDirection: 'row',
@@ -564,8 +536,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   fontSizeButtonActive: {
-    backgroundColor: colors.primary + '20',
-    borderColor: colors.primary,
+    
+    
   },
   fontSizeButtonText: {
     fontSize: 16,
@@ -573,10 +545,10 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   fontSizeButtonTextActive: {
-    color: colors.primary,
+    
   },
   card: {
-    backgroundColor: colors.surface,
+    
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
@@ -589,10 +561,10 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 18,
     lineHeight: 28,
-    color: colors.text,
+    
   },
   audioSection: {
-    backgroundColor: colors.surface,
+    
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
@@ -606,7 +578,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: colors.text,
+    
   },
   controlGroup: {
     marginBottom: 20,
@@ -615,7 +587,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-    color: colors.text,
+    
   },
   pickerContainer: {
     borderWidth: 1,
@@ -667,7 +639,7 @@ const styles = StyleSheet.create({
   footer: {
     padding: 20,
     paddingBottom: 30,
-    backgroundColor: colors.surface,
+    
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
   },
@@ -684,12 +656,12 @@ const styles = StyleSheet.create({
   placeholderTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
+    
     marginBottom: 12,
   },
   placeholderText: {
     fontSize: 16,
-    color: colors.text,
+    
     textAlign: 'center',
     marginBottom: 12,
     lineHeight: 24,
