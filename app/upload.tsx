@@ -4,7 +4,9 @@ import { useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from '../src/components/Button';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/contexts/ThemeContext';
+import { useFontSize } from '../src/contexts/FontSizeContext';
+import { useLanguage } from '../src/contexts/LanguageContext';
 import { SAMPLE_DOCUMENTS } from '../src/services/sampleDocuments';
 
 const { width } = Dimensions.get('window');
@@ -18,6 +20,9 @@ interface UploadHistory {
 
 export default function UploadScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const { getScaledSize } = useFontSize();
+  const { t } = useLanguage();
   const [uploadHistory, setUploadHistory] = useState<UploadHistory[]>([]);
 
   useEffect(() => {
@@ -79,22 +84,26 @@ export default function UploadScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>📤 Upload Document</Text>
-        <Text style={styles.subtitle}>
-          Upload any PDF, image, or text file to get started
+        <Text style={[styles.title, { color: colors.text, fontSize: getScaledSize(24) }]}>
+          {t('upload.title')}
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+          {t('upload.supportedFormats')}
         </Text>
       </View>
 
       {/* Upload Area */}
       <View style={styles.uploadArea}>
-        <View style={styles.uploadBox}>
+        <View style={[styles.uploadBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <Text style={styles.uploadIcon}>📁</Text>
-          <Text style={styles.uploadTitle}>Tap to Select File</Text>
-          <Text style={styles.uploadSubtitle}>
-            PDF, Images (JPG, PNG), Text files
+          <Text style={[styles.uploadTitle, { color: colors.text, fontSize: getScaledSize(18) }]}>
+            {t('upload.selectFile')}
+          </Text>
+          <Text style={[styles.uploadSubtitle, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+            {t('upload.supportedFormats')}
           </Text>
           <View style={styles.uploadButton}>
             <Button 
@@ -107,8 +116,10 @@ export default function UploadScreen() {
 
       {/* Quick Start with Samples */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>⚡ Quick Start with Samples</Text>
-        <Text style={styles.sectionSubtitle}>
+        <Text style={[styles.sectionTitle, { color: colors.text, fontSize: getScaledSize(20) }]}>
+          {t('upload.quickStart')}
+        </Text>
+        <Text style={[styles.sectionSubtitle, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
           Try these CBC-aligned sample documents
         </Text>
         
@@ -116,42 +127,50 @@ export default function UploadScreen() {
           {SAMPLE_DOCUMENTS.slice(0, 4).map((sample) => (
             <TouchableOpacity
               key={sample.id}
-              style={styles.sampleCard}
+              style={[styles.sampleCard, { backgroundColor: colors.card }]}
               onPress={() => handleSampleSelect(sample.id)}
             >
               <Text style={styles.sampleEmoji}>{sample.emoji}</Text>
-              <Text style={styles.sampleTitle} numberOfLines={2}>
+              <Text style={[styles.sampleTitle, { color: colors.text, fontSize: getScaledSize(13) }]} numberOfLines={2}>
                 {sample.title}
               </Text>
-              <Text style={styles.sampleGrade}>{sample.content.gradeLevel}</Text>
+              <Text style={[styles.sampleGrade, { color: colors.primary, fontSize: getScaledSize(11) }]}>
+                {sample.content.gradeLevel}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
         
         <TouchableOpacity 
-          style={styles.viewAllButton}
+          style={[styles.viewAllButton, { backgroundColor: colors.surface }]}
           onPress={() => router.push('/')}
         >
-          <Text style={styles.viewAllText}>View All Samples →</Text>
+          <Text style={[styles.viewAllText, { color: colors.primary, fontSize: getScaledSize(14) }]}>
+            View All Samples →
+          </Text>
         </TouchableOpacity>
       </View>
 
       {/* Upload History */}
       {uploadHistory.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📜 Recent Uploads</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: getScaledSize(20) }]}>
+            {t('upload.history')}
+          </Text>
           {uploadHistory.map((item) => (
-            <View key={item.id} style={styles.historyCard}>
-              <View style={styles.historyIcon}>
+            <View key={item.id} style={[styles.historyCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={[styles.historyIcon, { backgroundColor: colors.primary + '20' }]}>
                 <Text style={styles.historyIconText}>
                   {item.type.includes('pdf') ? '📄' : item.type.includes('image') ? '🖼️' : '📝'}
                 </Text>
               </View>
               <View style={styles.historyInfo}>
-                <Text style={styles.historyName} numberOfLines={1}>
+                <Text style={[styles.historyName, { color: colors.text, fontSize: getScaledSize(16) }]} numberOfLines={1}>
                   {item.name}
                 </Text>
-                <Text style={styles.historyDate}>{item.date}</Text>
+                <Text style={[styles.historyDate, { color: colors.textSecondary, fontSize: getScaledSize(12) }]}>
+                  {item.date}
+                </Text>
               </View>
             </View>
           ))}
@@ -166,7 +185,7 @@ export default function UploadScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    
   },
   header: {
     padding: 20,
@@ -175,12 +194,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
+    
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: colors.text,
+    
     opacity: 0.7,
   },
   uploadArea: {
@@ -188,12 +207,12 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   uploadBox: {
-    backgroundColor: colors.surface,
+    
     borderRadius: 20,
     padding: 32,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: colors.primary,
+    
     borderStyle: 'dashed',
   },
   uploadIcon: {
@@ -203,12 +222,12 @@ const styles = StyleSheet.create({
   uploadTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.text,
+    
     marginBottom: 8,
   },
   uploadSubtitle: {
     fontSize: 12,
-    color: colors.text,
+    
     opacity: 0.6,
     textAlign: 'center',
     marginBottom: 20,
@@ -222,13 +241,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.text,
+    
     paddingHorizontal: 20,
     marginBottom: 8,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: colors.text,
+    
     opacity: 0.6,
     paddingHorizontal: 20,
     marginBottom: 16,
@@ -241,7 +260,7 @@ const styles = StyleSheet.create({
   },
   sampleCard: {
     width: (width - 56) / 2,
-    backgroundColor: colors.surface,
+    
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
@@ -258,14 +277,14 @@ const styles = StyleSheet.create({
   sampleTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.text,
+    
     textAlign: 'center',
     marginBottom: 6,
     minHeight: 34,
   },
   sampleGrade: {
     fontSize: 11,
-    color: colors.primary,
+    
     fontWeight: '600',
   },
   viewAllButton: {
@@ -276,11 +295,11 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
-    color: colors.primary,
+    
     fontWeight: '600',
   },
   historyCard: {
-    backgroundColor: colors.surface,
+    
     marginHorizontal: 20,
     padding: 14,
     borderRadius: 12,
@@ -297,7 +316,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: colors.primary + '15',
+    
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -311,12 +330,12 @@ const styles = StyleSheet.create({
   historyName: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.text,
+    
     marginBottom: 2,
   },
   historyDate: {
     fontSize: 12,
-    color: colors.text,
+    
     opacity: 0.5,
   },
   footer: {

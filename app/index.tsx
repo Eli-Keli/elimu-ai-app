@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from '../src/components/Button';
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/contexts/ThemeContext';
+import { useFontSize } from '../src/contexts/FontSizeContext';
+import { useLanguage } from '../src/contexts/LanguageContext';
 import { SAMPLE_DOCUMENTS } from '../src/services/sampleDocuments';
 
 const { width } = Dimensions.get('window');
@@ -17,6 +19,9 @@ interface RecentDocument {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+  const { getScaledSize } = useFontSize();
+  const { t } = useLanguage();
   const [recentDocs, setRecentDocs] = useState<RecentDocument[]>([]);
   const [learningTip, setLearningTip] = useState('');
 
@@ -55,28 +60,34 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.greeting}>Karibu! 👋</Text>
-        <Text style={styles.title}>What would you like to learn today?</Text>
+        <Text style={[styles.greeting, { color: colors.text, fontSize: getScaledSize(28) }]}>
+          {t('home.greeting')}
+        </Text>
+        <Text style={[styles.title, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
+          {t('home.subtitle')}
+        </Text>
       </View>
 
       {/* Learning Tip */}
-      <View style={styles.tipCard}>
-        <Text style={styles.tipText}>{learningTip}</Text>
+      <View style={[styles.tipCard, { backgroundColor: colors.accent + '15', borderLeftColor: colors.accent }]}>
+        <Text style={[styles.tipText, { color: colors.text, fontSize: getScaledSize(14) }]}>{learningTip}</Text>
       </View>
 
       {/* Quick Actions */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text, fontSize: getScaledSize(20) }]}>
+          {t('home.quickActions')}
+        </Text>
         <View style={styles.actionButtons}>
           <Button 
-            title="📤 Upload Document" 
+            title={`📤 ${t('home.uploadDocument')}`}
             onPress={() => router.push('/upload')}
           />
           <Button 
-            title="⚙️ Settings" 
+            title={`⚙️ ${t('home.viewSettings')}`}
             onPress={() => router.push('/settings')}
           />
         </View>
@@ -84,8 +95,12 @@ export default function HomeScreen() {
 
       {/* Sample Documents */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>📚 Try Sample Documents</Text>
-        <Text style={styles.sectionSubtitle}>CBC-aligned content for Kenyan students</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text, fontSize: getScaledSize(20) }]}>
+          {t('home.quickStart')}
+        </Text>
+        <Text style={[styles.sectionSubtitle, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+          CBC-aligned content for Kenyan students
+        </Text>
         
         <ScrollView 
           horizontal 
@@ -95,16 +110,18 @@ export default function HomeScreen() {
           {SAMPLE_DOCUMENTS.map((sample) => (
             <TouchableOpacity
               key={sample.id}
-              style={styles.sampleCard}
+              style={[styles.sampleCard, { backgroundColor: colors.card }]}
               onPress={() => handleSampleSelect(sample.id)}
             >
               <Text style={styles.sampleEmoji}>{sample.emoji}</Text>
-              <Text style={styles.sampleTitle} numberOfLines={2}>
+              <Text style={[styles.sampleTitle, { color: colors.text, fontSize: getScaledSize(14) }]} numberOfLines={2}>
                 {sample.title}
               </Text>
-              <Text style={styles.sampleSubject}>{sample.subject}</Text>
-              <View style={styles.sampleBadge}>
-                <Text style={styles.sampleBadgeText}>
+              <Text style={[styles.sampleSubject, { color: colors.primary, fontSize: getScaledSize(12) }]}>
+                {sample.subject}
+              </Text>
+              <View style={[styles.sampleBadge, { backgroundColor: colors.accent + '20' }]}>
+                <Text style={[styles.sampleBadgeText, { color: colors.accent, fontSize: getScaledSize(10) }]}>
                   {sample.content.gradeLevel}
                 </Text>
               </View>
@@ -116,18 +133,26 @@ export default function HomeScreen() {
       {/* Recent Documents */}
       {recentDocs.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📖 Recent Documents</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: getScaledSize(20) }]}>
+            {t('home.recentDocuments')}
+          </Text>
           {recentDocs.slice(0, 3).map((doc) => (
             <TouchableOpacity
               key={doc.id}
-              style={styles.recentCard}
+              style={[styles.recentCard, { backgroundColor: colors.card, borderColor: colors.border }]}
               onPress={() => router.push(`/results?docId=${doc.id}`)}
             >
               <View>
-                <Text style={styles.recentTitle}>{doc.title}</Text>
-                <Text style={styles.recentSubject}>{doc.subject}</Text>
+                <Text style={[styles.recentTitle, { color: colors.text, fontSize: getScaledSize(16) }]}>
+                  {doc.title}
+                </Text>
+                <Text style={[styles.recentSubject, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+                  {doc.subject}
+                </Text>
               </View>
-              <Text style={styles.recentDate}>{doc.date}</Text>
+              <Text style={[styles.recentDate, { color: colors.textSecondary, fontSize: getScaledSize(12) }]}>
+                {doc.date}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -141,7 +166,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    
   },
   header: {
     padding: 20,
@@ -150,12 +175,12 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.primary,
+    
     marginBottom: 8,
   },
   title: {
     fontSize: 16,
-    color: colors.text,
+    
     opacity: 0.7,
   },
   tipCard: {
@@ -178,13 +203,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.text,
+    
     paddingHorizontal: 20,
     marginBottom: 8,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: colors.text,
+    
     opacity: 0.6,
     paddingHorizontal: 20,
     marginBottom: 16,
@@ -199,7 +224,7 @@ const styles = StyleSheet.create({
   },
   sampleCard: {
     width: width * 0.4,
-    backgroundColor: colors.surface,
+    
     borderRadius: 16,
     padding: 16,
     elevation: 2,
@@ -215,18 +240,18 @@ const styles = StyleSheet.create({
   sampleTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.text,
+    
     marginBottom: 6,
     minHeight: 36,
   },
   sampleSubject: {
     fontSize: 12,
-    color: colors.text,
+    
     opacity: 0.6,
     marginBottom: 8,
   },
   sampleBadge: {
-    backgroundColor: colors.primary,
+    
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -234,11 +259,11 @@ const styles = StyleSheet.create({
   },
   sampleBadgeText: {
     fontSize: 10,
-    color: colors.surface,
+    
     fontWeight: '600',
   },
   recentCard: {
-    backgroundColor: colors.surface,
+    
     marginHorizontal: 20,
     padding: 16,
     borderRadius: 12,
@@ -255,17 +280,17 @@ const styles = StyleSheet.create({
   recentTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
+    
     marginBottom: 4,
   },
   recentSubject: {
     fontSize: 12,
-    color: colors.text,
+    
     opacity: 0.6,
   },
   recentDate: {
     fontSize: 12,
-    color: colors.text,
+    
     opacity: 0.5,
   },
   footer: {

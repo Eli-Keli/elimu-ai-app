@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { colors } from '../src/theme/colors';
+import { useTheme } from '../src/contexts/ThemeContext';
+import { useFontSize } from '../src/contexts/FontSizeContext';
+import { useLanguage } from '../src/contexts/LanguageContext';
 import { processDocument, DocumentProcessingResult, AIProcessingError } from '../src/ai';
 import { Button } from '../src/components/Button';
 import ProcessingAnimation from '../src/components/processing/ProcessingAnimation';
@@ -12,6 +14,9 @@ type ProcessingState = 'idle' | 'processing' | 'success' | 'error';
 export default function ReaderScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>(); // <-- Get document URI from params
   const router = useRouter();
+  const { colors } = useTheme();
+  const { getScaledSize } = useFontSize();
+  const { t } = useLanguage();
   
   const [state, setState] = useState<ProcessingState>('idle');
   const [result, setResult] = useState<DocumentProcessingResult | null>(null);
@@ -97,17 +102,23 @@ export default function ReaderScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
       {state !== 'processing' && (
         <>
-          <Text style={styles.header}>Document Processing</Text>
-          <View style={styles.fileInfoCard}>
+          <Text style={[styles.header, { color: colors.text, fontSize: getScaledSize(24) }]}>
+            {t('processing.title')}
+          </Text>
+          <View style={[styles.fileInfoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={styles.fileIcon}>
               {fileType.includes('PDF') ? '📄' : fileType.includes('Image') ? '🖼️' : '📝'}
             </Text>
             <View style={styles.fileDetails}>
-              <Text style={styles.fileName} numberOfLines={2}>{fileName || 'No file selected'}</Text>
-              <Text style={styles.fileType}>{fileType}</Text>
+              <Text style={[styles.fileName, { color: colors.text, fontSize: getScaledSize(16) }]} numberOfLines={2}>
+                {fileName || 'No file selected'}
+              </Text>
+              <Text style={[styles.fileType, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+                {fileType}
+              </Text>
             </View>
           </View>
         </>
@@ -132,34 +143,50 @@ export default function ReaderScreen() {
       {state === 'success' && result && (
         <View style={styles.successContainer}>
           <Text style={styles.successIcon}>✅</Text>
-          <Text style={styles.successTitle}>Processing Complete!</Text>
+          <Text style={[styles.successTitle, { color: colors.text, fontSize: getScaledSize(24) }]}>
+            {t('common.success')}!
+          </Text>
           
           <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Processing Time</Text>
-              <Text style={styles.statValue}>
+            <View style={[styles.statItem, { backgroundColor: colors.card }]}>
+              <Text style={[styles.statLabel, { color: colors.textSecondary, fontSize: getScaledSize(12) }]}>
+                Processing Time
+              </Text>
+              <Text style={[styles.statValue, { color: colors.text, fontSize: getScaledSize(18) }]}>
                 {(result.metadata.processingTimeMs / 1000).toFixed(2)}s
               </Text>
             </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Characters</Text>
-              <Text style={styles.statValue}>{result.text.length}</Text>
+            <View style={[styles.statItem, { backgroundColor: colors.card }]}>
+              <Text style={[styles.statLabel, { color: colors.textSecondary, fontSize: getScaledSize(12) }]}>
+                Characters
+              </Text>
+              <Text style={[styles.statValue, { color: colors.text, fontSize: getScaledSize(18) }]}>
+                {result.text.length}
+              </Text>
             </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Audio</Text>
-              <Text style={styles.statValue}>
+            <View style={[styles.statItem, { backgroundColor: colors.card }]}>
+              <Text style={[styles.statLabel, { color: colors.textSecondary, fontSize: getScaledSize(12) }]}>
+                Audio
+              </Text>
+              <Text style={[styles.statValue, { color: colors.text, fontSize: getScaledSize(18) }]}>
                 {result.audio.status === 'ready' ? '✓' : '✗'}
               </Text>
             </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Visuals</Text>
-              <Text style={styles.statValue}>{result.images.images.length}</Text>
+            <View style={[styles.statItem, { backgroundColor: colors.card }]}>
+              <Text style={[styles.statLabel, { color: colors.textSecondary, fontSize: getScaledSize(12) }]}>
+                Visuals
+              </Text>
+              <Text style={[styles.statValue, { color: colors.text, fontSize: getScaledSize(18) }]}>
+                {result.images.images.length}
+              </Text>
             </View>
           </View>
 
-          <View style={styles.previewContainer}>
-            <Text style={styles.previewLabel}>Preview:</Text>
-            <Text style={styles.previewText} numberOfLines={4}>
+          <View style={[styles.previewContainer, { backgroundColor: colors.card }]}>
+            <Text style={[styles.previewLabel, { color: colors.primary, fontSize: getScaledSize(14) }]}>
+              Preview:
+            </Text>
+            <Text style={[styles.previewText, { color: colors.text, fontSize: getScaledSize(14) }]} numberOfLines={4}>
               {result.text}
             </Text>
           </View>
@@ -180,8 +207,12 @@ export default function ReaderScreen() {
       {state === 'error' && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorIcon}>❌</Text>
-          <Text style={styles.errorTitle}>Processing Failed</Text>
-          <Text style={styles.errorMessage}>{error}</Text>
+          <Text style={[styles.errorTitle, { color: colors.error, fontSize: getScaledSize(24) }]}>
+            Processing Failed
+          </Text>
+          <Text style={[styles.errorMessage, { color: colors.text, fontSize: getScaledSize(14) }]}>
+            {error}
+          </Text>
           
           <Button 
             title="Try Again" 
@@ -198,8 +229,10 @@ export default function ReaderScreen() {
       {/* Placeholder for future PDF viewer */}
       {state === 'idle' && (
         <View style={styles.placeholder}>
-          <Text style={styles.placeholderText}>📖 Document Viewer</Text>
-          <Text style={styles.placeholderSubtext}>
+          <Text style={[styles.placeholderText, { color: colors.text, fontSize: getScaledSize(20) }]}>
+            📖 Document Viewer
+          </Text>
+          <Text style={[styles.placeholderSubtext, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
             PDF preview will appear here in future versions
           </Text>
         </View>
@@ -217,11 +250,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: colors.text,
+    
   },
   fileInfoCard: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
+    
     padding: 16,
     borderRadius: 12,
     marginBottom: 20,
@@ -242,12 +275,12 @@ const styles = StyleSheet.create({
   fileName: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
+    
     marginBottom: 4,
   },
   fileType: {
     fontSize: 12,
-    color: colors.text,
+    
     opacity: 0.6,
   },
   // Processing states
@@ -259,7 +292,7 @@ const styles = StyleSheet.create({
   processingText: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.text,
+    
     marginTop: 20,
   },
   processingSubtext: {
@@ -280,7 +313,7 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.primary,
+    
     marginBottom: 10,
   },
   statsContainer: {
@@ -293,7 +326,7 @@ const styles = StyleSheet.create({
   },
   statItem: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    
     padding: 15,
     borderRadius: 10,
     minWidth: '40%',
@@ -311,11 +344,11 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.primary,
+    
   },
   previewContainer: {
     width: '100%',
-    backgroundColor: colors.surface,
+    
     padding: 15,
     borderRadius: 10,
     marginVertical: 10,
@@ -323,13 +356,13 @@ const styles = StyleSheet.create({
   previewLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.text,
+    
     marginBottom: 8,
   },
   previewText: {
     fontSize: 16,
     lineHeight: 24,
-    color: colors.text,
+    
   },
   // Error state
   errorContainer: {
@@ -344,12 +377,12 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.error,
+    
     marginBottom: 10,
   },
   errorMessage: {
     fontSize: 16,
-    color: colors.text,
+    
     textAlign: 'center',
     marginBottom: 20,
   },
