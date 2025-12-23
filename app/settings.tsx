@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Switch, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Speech from 'expo-speech';
-import { colors } from '../src/theme/colors';
-
-type ThemeMode = 'light' | 'dark';
-type FontSize = 'small' | 'medium' | 'large';
-type Language = 'en' | 'sw';
+import { useTheme } from '../src/contexts/ThemeContext';
+import { useFontSize } from '../src/contexts/FontSizeContext';
+import { useLanguage } from '../src/contexts/LanguageContext';
 
 export default function SettingsScreen() {
-  // State
-  const [themeMode, setThemeMode] = useState<ThemeMode>('light');
-  const [fontSize, setFontSize] = useState<FontSize>('medium');
+  const { themeMode, setThemeMode, colors } = useTheme();
+  const { fontSize, setFontSize, getScaledSize } = useFontSize();
+  const { language, setLanguage, t } = useLanguage();
+  
   const [ttsVoice, setTtsVoice] = useState<string>('default');
-  const [language, setLanguage] = useState<Language>('en');
   const [availableVoices, setAvailableVoices] = useState<Speech.Voice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load settings on mount
   useEffect(() => {
     loadSettings();
     loadVoices();
@@ -25,17 +22,8 @@ export default function SettingsScreen() {
 
   const loadSettings = async () => {
     try {
-      const [savedTheme, savedFontSize, savedVoice, savedLanguage] = await Promise.all([
-        AsyncStorage.getItem('@app_theme'),
-        AsyncStorage.getItem('@app_fontSize'),
-        AsyncStorage.getItem('@app_ttsVoice'),
-        AsyncStorage.getItem('@app_language'),
-      ]);
-
-      if (savedTheme) setThemeMode(savedTheme as ThemeMode);
-      if (savedFontSize) setFontSize(savedFontSize as FontSize);
+      const savedVoice = await AsyncStorage.getItem('@app_ttsVoice');
       if (savedVoice) setTtsVoice(savedVoice);
-      if (savedLanguage) setLanguage(savedLanguage as Language);
     } catch (error) {
       console.error('Failed to load settings:', error);
     } finally {
@@ -46,42 +34,54 @@ export default function SettingsScreen() {
   const loadVoices = async () => {
     try {
       const voices = await Speech.getAvailableVoicesAsync();
-      setAvailableVoices(voices);
+      
+      // Filter for quality English and Swahili voices only
+      const filteredVoices = voices.filter(voice => {
+        const lang = voice.language.toLowerCase();
+        const name = voice.name.toLowerCase();
+        
+        // iOS: Prefer Samantha and other quality en-US voices
+        if (Platform.OS === 'ios') {
+          return (
+            (lang.startsWith('en') && (
+              name.includes('samantha') ||
+              name.includes('ava') ||
+              name.includes('nicky') ||
+              name.includes('susan')
+            )) ||
+            lang.startsWith('sw')
+          );
+        }
+        
+        // Android: Only en-US or sw voices
+        return lang.startsWith('en-us') || lang.startsWith('sw');
+      });
+
+      // Sort to put Samantha first on iOS, or just keep first few quality voices
+      const sortedVoices = filteredVoices.sort((a, b) => {
+        if (Platform.OS === 'ios' && a.name.toLowerCase().includes('samantha')) return -1;
+        if (Platform.OS === 'ios' && b.name.toLowerCase().includes('samantha')) return 1;
+        return 0;
+      });
+
+      // Limit to top 5 voices
+      setAvailableVoices(sortedVoices.slice(0, 5));
     } catch (error) {
       console.error('Failed to load voices:', error);
     }
   };
 
-  // Handlers
   const handleThemeChange = async (value: boolean) => {
-    const newTheme: ThemeMode = value ? 'dark' : 'light';
-    setThemeMode(newTheme);
-    try {
-      await AsyncStorage.setItem('@app_theme', newTheme);
-      Alert.alert('Theme Updated', `Switched to ${newTheme} mode. Restart the app to see changes.`);
-    } catch (error) {
-      console.error('Failed to save theme:', error);
-    }
+    const newTheme = value ? 'dark' : 'light';
+    await setThemeMode(newTheme);
   };
 
-  const handleFontSizeChange = async (size: FontSize) => {
-    setFontSize(size);
-    try {
-      await AsyncStorage.setItem('@app_fontSize', size);
-      Alert.alert('Font Size Updated', 'Your preference has been saved.');
-    } catch (error) {
-      console.error('Failed to save font size:', error);
-    }
+  const handleFontSizeChange = async (size: 'small' | 'medium' | 'large') => {
+    await setFontSize(size);
   };
 
-  const handleLanguageChange = async (lang: Language) => {
-    setLanguage(lang);
-    try {
-      await AsyncStorage.setItem('@app_language', lang);
-      Alert.alert('Language Updated', lang === 'en' ? 'Set to English' : 'Imewekwa kwa Kiswahili');
-    } catch (error) {
-      console.error('Failed to save language:', error);
-    }
+  const handleLanguageChange = async (lang: 'en' | 'sw') => {
+    await setLanguage(lang);
   };
 
   const testVoice = (voice: Speech.Voice) => {
@@ -96,8 +96,10 @@ export default function SettingsScreen() {
 
   if (isLoading) {
     return (
-      <View style={[styles.container, styles.centerContent]}>
-        <Text style={styles.loadingText}>Loading settings...</Text>
+      <View style={[styles.container, styles.centerContent, { backgroundColor: colors.background }]}>
+        <Text style={[styles.loadingText, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
+          {t('settings.loading')}
+        </Text>
       </View>
     );
   }
@@ -105,17 +107,25 @@ export default function SettingsScreen() {
   const isDarkMode = themeMode === 'dark';
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <Text style={styles.mainHeader}>Settings</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.contentContainer}>
+      <Text style={[styles.mainHeader, { color: colors.text, fontSize: getScaledSize(32) }]}>
+        {t('settings.title')}
+      </Text>
 
       {/* Appearance Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Appearance</Text>
+      <View style={[styles.section, { backgroundColor: colors.card }]}>
+        <Text style={[styles.sectionHeader, { color: colors.primary, fontSize: getScaledSize(18) }]}>
+          {t('settings.appearance')}
+        </Text>
         
         <View style={styles.settingRow}>
           <View style={styles.settingInfo}>
-            <Text style={styles.settingLabel}>Dark Mode</Text>
-            <Text style={styles.settingDescription}>Enable dark theme</Text>
+            <Text style={[styles.settingLabel, { color: colors.text, fontSize: getScaledSize(16) }]}>
+              {t('settings.darkMode')}
+            </Text>
+            <Text style={[styles.settingDescription, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+              {t('settings.darkModeDesc')}
+            </Text>
           </View>
           <Switch 
             value={isDarkMode}
@@ -127,59 +137,95 @@ export default function SettingsScreen() {
 
         <View style={styles.settingRow}>
           <View style={styles.settingInfo}>
-            <Text style={styles.settingLabel}>Font Size</Text>
-            <Text style={styles.settingDescription}>Adjust reading text size</Text>
+            <Text style={[styles.settingLabel, { color: colors.text, fontSize: getScaledSize(16) }]}>
+              {t('settings.fontSize')}
+            </Text>
+            <Text style={[styles.settingDescription, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+              {t('settings.fontSizeDesc')}
+            </Text>
           </View>
         </View>
         <View style={styles.fontSizeButtons}>
           <TouchableOpacity 
-            style={[styles.fontButton, fontSize === 'small' && styles.fontButtonActive]}
+            style={[
+              styles.fontButton,
+              { backgroundColor: fontSize === 'small' ? colors.accent + '20' : colors.surface },
+              fontSize === 'small' && { borderColor: colors.primary }
+            ]}
             onPress={() => handleFontSizeChange('small')}
           >
-            <Text style={[styles.fontButtonText, fontSize === 'small' && styles.fontButtonTextActive]}>
+            <Text style={[
+              styles.fontButtonText,
+              { color: fontSize === 'small' ? colors.primary : colors.textSecondary, fontSize: 24 }
+            ]}>
               A-
             </Text>
-            <Text style={styles.fontButtonLabel}>Small</Text>
+            <Text style={[styles.fontButtonLabel, { color: colors.textSecondary, fontSize: 12 }]}>
+              {t('settings.small')}
+            </Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.fontButton, fontSize === 'medium' && styles.fontButtonActive]}
+            style={[
+              styles.fontButton,
+              { backgroundColor: fontSize === 'medium' ? colors.accent + '20' : colors.surface },
+              fontSize === 'medium' && { borderColor: colors.primary }
+            ]}
             onPress={() => handleFontSizeChange('medium')}
           >
-            <Text style={[styles.fontButtonText, fontSize === 'medium' && styles.fontButtonTextActive]}>
+            <Text style={[
+              styles.fontButtonText,
+              { color: fontSize === 'medium' ? colors.primary : colors.textSecondary, fontSize: 24 }
+            ]}>
               A
             </Text>
-            <Text style={styles.fontButtonLabel}>Medium</Text>
+            <Text style={[styles.fontButtonLabel, { color: colors.textSecondary, fontSize: 12 }]}>
+              {t('settings.medium')}
+            </Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.fontButton, fontSize === 'large' && styles.fontButtonActive]}
+            style={[
+              styles.fontButton,
+              { backgroundColor: fontSize === 'large' ? colors.accent + '20' : colors.surface },
+              fontSize === 'large' && { borderColor: colors.primary }
+            ]}
             onPress={() => handleFontSizeChange('large')}
           >
-            <Text style={[styles.fontButtonText, fontSize === 'large' && styles.fontButtonTextActive]}>
+            <Text style={[
+              styles.fontButtonText,
+              { color: fontSize === 'large' ? colors.primary : colors.textSecondary, fontSize: 24 }
+            ]}>
               A+
             </Text>
-            <Text style={styles.fontButtonLabel}>Large</Text>
+            <Text style={[styles.fontButtonLabel, { color: colors.textSecondary, fontSize: 12 }]}>
+              {t('settings.large')}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Audio Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Audio Settings</Text>
+      <View style={[styles.section, { backgroundColor: colors.card }]}>
+        <Text style={[styles.sectionHeader, { color: colors.primary, fontSize: getScaledSize(18) }]}>
+          {t('settings.audio')}
+        </Text>
         
         <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Text-to-Speech Voice</Text>
+          <Text style={[styles.settingLabel, { color: colors.text, fontSize: getScaledSize(16) }]}>
+            {t('settings.ttsVoice')}
+          </Text>
         </View>
         
         {availableVoices.length > 0 ? (
           <View style={styles.voiceList}>
-            {availableVoices.slice(0, 5).map((voice) => (
+            {availableVoices.map((voice) => (
               <TouchableOpacity
                 key={voice.identifier}
                 style={[
                   styles.voiceItem,
-                  ttsVoice === voice.identifier && styles.voiceItemActive
+                  { backgroundColor: ttsVoice === voice.identifier ? colors.accent + '15' : colors.surface },
+                  ttsVoice === voice.identifier && { borderColor: colors.primary }
                 ]}
                 onPress={async () => {
                   setTtsVoice(voice.identifier);
@@ -190,43 +236,63 @@ export default function SettingsScreen() {
                 <View style={styles.voiceInfo}>
                   <Text style={[
                     styles.voiceName,
-                    ttsVoice === voice.identifier && styles.voiceNameActive
+                    { color: ttsVoice === voice.identifier ? colors.primary : colors.text, fontSize: getScaledSize(16) }
                   ]}>
                     {voice.name}
                   </Text>
-                  <Text style={styles.voiceLanguage}>{voice.language}</Text>
+                  <Text style={[styles.voiceLanguage, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+                    {voice.language}
+                  </Text>
                 </View>
                 {ttsVoice === voice.identifier && (
-                  <Text style={styles.checkmark}>✓</Text>
+                  <Text style={[styles.checkmark, { color: colors.primary }]}>✓</Text>
                 )}
               </TouchableOpacity>
             ))}
           </View>
         ) : (
-          <Text style={styles.noVoicesText}>No voices available</Text>
+          <Text style={[styles.noVoicesText, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+            {t('settings.noVoices')}
+          </Text>
         )}
       </View>
 
       {/* Language Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Language</Text>
+      <View style={[styles.section, { backgroundColor: colors.card }]}>
+        <Text style={[styles.sectionHeader, { color: colors.primary, fontSize: getScaledSize(18) }]}>
+          {t('settings.language')}
+        </Text>
         
         <View style={styles.languageButtons}>
           <TouchableOpacity
-            style={[styles.languageButton, language === 'en' && styles.languageButtonActive]}
+            style={[
+              styles.languageButton,
+              { backgroundColor: language === 'en' ? colors.accent + '20' : colors.surface },
+              language === 'en' && { borderColor: colors.primary }
+            ]}
             onPress={() => handleLanguageChange('en')}
           >
-            <Text style={[styles.languageButtonText, language === 'en' && styles.languageButtonTextActive]}>
-              🇬🇧 English
+            <Text style={[
+              styles.languageButtonText,
+              { color: language === 'en' ? colors.primary : colors.textSecondary, fontSize: getScaledSize(16) }
+            ]}>
+              🇬🇧 {t('settings.english')}
             </Text>
           </TouchableOpacity>
           
           <TouchableOpacity
-            style={[styles.languageButton, language === 'sw' && styles.languageButtonActive]}
+            style={[
+              styles.languageButton,
+              { backgroundColor: language === 'sw' ? colors.accent + '20' : colors.surface },
+              language === 'sw' && { borderColor: colors.primary }
+            ]}
             onPress={() => handleLanguageChange('sw')}
           >
-            <Text style={[styles.languageButtonText, language === 'sw' && styles.languageButtonTextActive]}>
-              🇰🇪 Kiswahili
+            <Text style={[
+              styles.languageButtonText,
+              { color: language === 'sw' ? colors.primary : colors.textSecondary, fontSize: getScaledSize(16) }
+            ]}>
+              🇰🇪 {t('settings.swahili')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -234,8 +300,12 @@ export default function SettingsScreen() {
 
       {/* App Info */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Elimu AI v1.0.0</Text>
-        <Text style={styles.footerSubtext}>Making learning accessible for everyone</Text>
+        <Text style={[styles.footerText, { color: colors.text, fontSize: getScaledSize(16) }]}>
+          {t('settings.appInfo')}
+        </Text>
+        <Text style={[styles.footerSubtext, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+          {t('settings.tagline')}
+        </Text>
       </View>
     </ScrollView>
   );
@@ -244,7 +314,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: 20,
@@ -254,18 +323,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    fontSize: 16,
-    color: colors.textSecondary,
+    fontWeight: '500',
   },
   mainHeader: {
-    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 30,
-    color: colors.text,
   },
   section: {
     marginBottom: 30,
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     shadowColor: '#000',
@@ -275,9 +340,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   sectionHeader: {
-    fontSize: 18,
     fontWeight: '600',
-    color: colors.primary,
     marginBottom: 16,
   },
   settingRow: {
@@ -290,15 +353,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   settingLabel: {
-    fontSize: 16,
     fontWeight: '500',
-    color: colors.text,
     marginBottom: 4,
   },
-  settingDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
+  settingDescription: {},
   fontSizeButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -309,28 +367,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f5f5f5',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  fontButtonActive: {
-    backgroundColor: colors.accent + '20',
-    borderColor: colors.primary,
-  },
+  fontButtonActive: {},
   fontButtonText: {
-    fontSize: 24,
     fontWeight: 'bold',
-    color: colors.textSecondary,
     marginBottom: 4,
   },
-  fontButtonTextActive: {
-    color: colors.primary,
-  },
-  fontButtonLabel: {
-    fontSize: 12,
-    color: colors.textSecondary,
-  },
+  fontButtonTextActive: {},
+  fontButtonLabel: {},
   voiceList: {
     marginTop: 8,
   },
@@ -339,40 +386,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: '#f9f9f9',
     borderRadius: 8,
     marginBottom: 8,
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  voiceItemActive: {
-    backgroundColor: colors.accent + '15',
-    borderColor: colors.primary,
-  },
+  voiceItemActive: {},
   voiceInfo: {
     flex: 1,
   },
   voiceName: {
-    fontSize: 16,
     fontWeight: '500',
-    color: colors.text,
   },
-  voiceNameActive: {
-    color: colors.primary,
-  },
+  voiceNameActive: {},
   voiceLanguage: {
-    fontSize: 14,
-    color: colors.textSecondary,
     marginTop: 2,
   },
   checkmark: {
     fontSize: 20,
-    color: colors.primary,
     fontWeight: 'bold',
   },
   noVoicesText: {
-    fontSize: 14,
-    color: colors.textSecondary,
     fontStyle: 'italic',
     textAlign: 'center',
     padding: 12,
@@ -385,23 +419,16 @@ const styles = StyleSheet.create({
   languageButton: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: 'transparent',
     alignItems: 'center',
   },
-  languageButtonActive: {
-    backgroundColor: colors.accent + '20',
-    borderColor: colors.primary,
-  },
+  languageButtonActive: {},
   languageButtonText: {
-    fontSize: 16,
     fontWeight: '500',
-    color: colors.textSecondary,
   },
   languageButtonTextActive: {
-    color: colors.primary,
     fontWeight: '600',
   },
   footer: {
@@ -410,14 +437,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
     marginBottom: 4,
   },
   footerSubtext: {
-    fontSize: 14,
-    color: colors.textSecondary,
     textAlign: 'center',
   },
 });

@@ -3,6 +3,9 @@ import { Stack } from 'expo-router';
 import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SplashScreenExpo from 'expo-splash-screen';
+import { ThemeProvider } from '../src/contexts/ThemeContext';
+import { FontSizeProvider } from '../src/contexts/FontSizeContext';
+import { LanguageProvider } from '../src/contexts/LanguageContext';
 import { colors } from '../src/theme/colors';
 import SplashScreen from '../src/components/onboarding/SplashScreen';
 import OnboardingSlider from '../src/components/onboarding/OnboardingSlider';
@@ -10,7 +13,7 @@ import OnboardingSlider from '../src/components/onboarding/OnboardingSlider';
 // Keep the splash screen visible while we check onboarding status
 SplashScreenExpo.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayoutContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
@@ -65,5 +68,17 @@ export default function RootLayout() {
       <Stack.Screen name="settings" options={{ title: 'Settings' }} />
       <Stack.Screen name="results" options={{ title: 'Results' }} />
     </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <FontSizeProvider>
+        <LanguageProvider>
+          <RootLayoutContent />
+        </LanguageProvider>
+      </FontSizeProvider>
+    </ThemeProvider>
   );
 }
