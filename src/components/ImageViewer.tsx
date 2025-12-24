@@ -13,6 +13,7 @@ import {
 import { useTheme } from '../contexts/ThemeContext';
 import { useFontSize } from '../contexts/FontSizeContext';
 import { VisualAid } from '../services/sampleDocuments';
+import { saveImage, shareImage } from '../utils/shareUtils';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const IMAGE_WIDTH = SCREEN_WIDTH - 40;
@@ -54,14 +55,24 @@ export default function ImageViewer({ visualAids, subject }: ImageViewerProps) {
     }
   };
 
-  const handleSaveImage = () => {
-    // TODO: Implement image save functionality
-    Alert.alert('Save Image', 'Image saving will be implemented in the next version.');
+  const handleSaveImage = async () => {
+    const currentVisual = visualAids[currentIndex];
+    const result = await saveImage(currentVisual.uri, currentVisual.title);
+    
+    if (result.success) {
+      Alert.alert('Image Saved', 'Image has been saved to your device.');
+    } else {
+      Alert.alert('Save Failed', result.error || 'Unable to save image.');
+    }
   };
 
-  const handleShareImage = () => {
-    // TODO: Implement image sharing
-    Alert.alert('Share Image', 'Image sharing will be implemented in the next version.');
+  const handleShareImage = async () => {
+    const currentVisual = visualAids[currentIndex];
+    const result = await shareImage(currentVisual.uri, currentVisual.title);
+    
+    if (!result.success) {
+      Alert.alert('Share Failed', result.error || 'Unable to share image.');
+    }
   };
 
   const getTypeEmoji = (type: string) => {

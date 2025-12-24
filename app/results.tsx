@@ -15,6 +15,7 @@ import { getAvailableVoices } from '../src/ai';
 import { speakText, stopSpeech, isSpeaking } from '../src/ai/adapt/audioConvert';
 import type { Voice } from '../src/ai/types';
 import { SAMPLE_DOCUMENTS, SampleDocument, VisualAid } from '../src/services/sampleDocuments';
+import { saveCompleteDocument, shareSummary } from '../src/utils/shareUtils';
 
 type TabType = 'text' | 'audio' | 'visuals' | 'study';
 
@@ -152,16 +153,31 @@ export default function ResultsScreen() {
     }
   };
 
-  const handleSaveSummary = () => {
-    // TODO: Implement save to device storage or cloud
-    console.log('Saving summary...');
-    Alert.alert('Save Summary', 'Summary saving will be implemented in the next version.');
+  const handleSaveSummary = async () => {
+    const result = await saveCompleteDocument({
+      title: sampleData?.title || 'Document',
+      subject: sampleData?.subject || '',
+      simplifiedText,
+      keyTakeaways: sampleData?.content.keyTakeaways || []
+    });
+    
+    if (result.success) {
+      Alert.alert(t('results.saved'), 'Document has been saved successfully!');
+    } else {
+      Alert.alert('Save Failed', result.error || 'Unable to save document.');
+    }
   };
 
-  const handleShare = () => {
-    // TODO: Implement sharing with Expo Sharing (expo-sharing)
-    console.log('Sharing summary...');
-    Alert.alert('Share', 'Sharing functionality will be implemented in the next version with expo-sharing.');
+  const handleShare = async () => {
+    const result = await shareSummary({
+      title: sampleData?.title || 'Document',
+      text: simplifiedText,
+      keyTakeaways: sampleData?.content.keyTakeaways || []
+    });
+    
+    if (!result.success) {
+      Alert.alert('Share Failed', result.error || 'Unable to share document.');
+    }
   };
 
   const handleCopyText = () => {
