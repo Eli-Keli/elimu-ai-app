@@ -5,12 +5,15 @@ import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
 import Markdown from 'react-native-markdown-display';
 import { Button } from '../src/components/Button';
+import FlashcardViewer, { Flashcard } from '../src/components/FlashcardViewer';
+import QuizViewer, { QuizQuestion } from '../src/components/QuizViewer';
 import { useTheme } from '../src/contexts/ThemeContext';
 import { useFontSize } from '../src/contexts/FontSizeContext';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { getAvailableVoices } from '../src/ai';
 import { speakText, stopSpeech, isSpeaking } from '../src/ai/adapt/audioConvert';
 import type { Voice } from '../src/ai/types';
+import { SAMPLE_DOCUMENTS, SampleDocument } from '../src/services/sampleDocuments';
 
 type TabType = 'text' | 'audio' | 'visuals' | 'study';
 
@@ -24,15 +27,24 @@ export default function ResultsScreen() {
     text?: string;
     audioUri?: string;
     processingTime?: string;
+    sampleId?: string;
   }>(); // <-- Get result data from params
 
+  // State for sample content
+  const [sampleData, setSampleData] = useState<SampleDocument | null>(null);
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+
   // Use params or fallback to placeholder data
-  const simplifiedText = params.text || "This is a simplified summary of the document. It uses simple words and clear sentence structures to make reading easier.";
+  const simplifiedText = sampleData?.content.simplifiedText || params.text || "This is a simplified summary of the document. It uses simple words and clear sentence structures to make reading easier.";
   const audioUri = params.audioUri;
   const processingTime = params.processingTime;
 
   // Tab navigation state
   const [activeTab, setActiveTab] = useState<TabType>('text');
+
+  // Study mode state
+  const [studyMode, setStudyMode] = useState<'flashcards' | 'quiz'>('flashcards');
 
   // Audio controls state
   const [voices, setVoices] = useState<Voice[]>([]);
@@ -40,6 +52,24 @@ export default function ResultsScreen() {
   const [speed, setSpeed] = useState(1.0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVoices, setIsLoadingVoices] = useState(true);
+
+  // Load sample data if sampleId provided
+  useEffect(() => {
+    if (params.sampleId) {
+      const sample = SAMPLE_DOCUMENTS.find(doc => doc.id === params.sampleId);
+      if (sample) {
+        setSampleData(sample);
+        // Load flashcards from sample
+        if (sample.content.flashcards) {
+          setFlashcards(sample.content.flashcards);
+        }
+        // Load quiz questions from sample
+        if (sample.content.quiz) {
+          setQuizQuestions(sample.content.quiz);
+        }
+      }
+    }
+  }, [params.sampleId]);
 
   // Load available voices on mount
   useEffect(() => {
@@ -424,15 +454,110 @@ export default function ResultsScreen() {
 
         {/* Study Tools Tab */}
         {activeTab === 'study' && (
-          <View style={styles.placeholderContainer}>
-            <Text style={styles.placeholderIcon}>📚</Text>
-            <Text style={styles.placeholderTitle}>Study Tools</Text>
-            <Text style={styles.placeholderText}>
-              Interactive flashcards, quizzes, and study notes will be available here.
-            </Text>
-            <Text style={styles.placeholderSubtext}>
-              Generate flashcards and take quizzes to test your understanding of the content.
-            </Text>
+          <View>
+            {flashcards.length > 0 || quizQuestions.length > 0 ? (
+              <>
+                {/* Study Mode Selector */}
+                <View style={[styles.studyModeSelector, { backgroundColor: colors.card }]}>
+                  <TouchableOpacity
+                    style={[
+                      styles.studyModeButton,
+                      studyMode === 'flashcards' && { backgroundColor: colors.primary },
+                    ]}
+                    onPress={() => setStudyMode('flashcards')}
+                  >
+                    <Text
+                      style={[
+                        styles.studyModeText,
+                        { fontSize: getScaledSize(14) },
+                        studyMode === 'flashcards' && { color: '#fff' },
+                        studyMode !== 'flashcards' && { color: colors.text },
+                      ]}
+                    >
+                      📚 Flashcards
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.studyModeButton,
+                      studyMode === 'quiz' && { backgroundColor: colors.primary },
+                    ]}
+                    onPress={() => setStudyMode('quiz')}
+                  >
+                    <Text
+                      style={[
+                        styles.studyModeText,
+                        { fontSize: getScaledSize(14) },
+                        studyMode === 'quiz' && { color: '#fff' },
+                        studyMode !== 'quiz' && { color: colors.text },
+                      ]}
+                    >
+                      🎯 Quiz
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Flashcards Mode */}
+                {studyMode === 'flashcards' && (
+                  <>
+                    {flashcards.length > 0 ? (
+                      <FlashcardViewer 
+                        flashcards={flashcards} 
+                        subject={sampleData?.subject || 'Study Session'} 
+                      />
+                    ) : (
+                      <View style={styles.placeholderContainer}>
+                        <Text style={styles.placeholderIcon}>📚</Text>
+                        <Text style={[styles.placeholderTitle, { color: colors.text, fontSize: getScaledSize(24) }]}>
+                          No Flashcards
+                        </Text>
+                        <Text style={[styles.placeholderText, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
+                          Flashcards are not available for this content yet.
+                        </Text>
+                      </View>
+                    )}
+                  </>
+                )}
+
+                {/* Quiz Mode */}
+                {studyMode === 'quiz' && (
+                  <>
+                    {quizQuestions.length > 0 ? (
+                      <QuizViewer 
+                        questions={quizQuestions} 
+                        subject={sampleData?.subject || 'Study Session'}
+                        onComplete={(score, total) => {
+                          console.log(`Quiz completed: ${score}/${total}`);
+                        }}
+                      />
+                    ) : (
+                      <View style={styles.placeholderContainer}>
+                        <Text style={styles.placeholderIcon}>🎯</Text>
+                        <Text style={[styles.placeholderTitle, { color: colors.text, fontSize: getScaledSize(24) }]}>
+                          No Quiz
+                        </Text>
+                        <Text style={[styles.placeholderText, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
+                          Quiz questions are not available for this content yet.
+                        </Text>
+                      </View>
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              <View style={styles.placeholderContainer}>
+                <Text style={styles.placeholderIcon}>📚</Text>
+                <Text style={[styles.placeholderTitle, { color: colors.text, fontSize: getScaledSize(24) }]}>
+                  Study Tools Coming Soon
+                </Text>
+                <Text style={[styles.placeholderText, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
+                  Study tools will be generated automatically from your document content.
+                </Text>
+                <Text style={[styles.placeholderSubtext, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+                  Try selecting a sample document from the home screen to see flashcards and quizzes in action!
+                </Text>
+              </View>
+            )}
           </View>
         )}
       </ScrollView>
@@ -671,5 +796,24 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  studyModeSelector: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 12,
+    padding: 4,
+    gap: 4,
+  },
+  studyModeButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  studyModeText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

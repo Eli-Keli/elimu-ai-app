@@ -87,6 +87,40 @@
             "explanation": "Chloroplasts make food for the plant using sunlight (photosynthesis). That's why leaves are green!"
         }
     ],
+    "flashcards": [
+        {
+            "term": "Nucleus (Kiini)",
+            "definition": "The control center of the cell. Contains DNA which gives instructions to all cell activities. Like a principal's office in a school!"
+        },
+        {
+            "term": "Mitochondria",
+            "definition": "The powerhouse of the cell. Makes energy (ATP) through cellular respiration. Like KPLC providing electricity to homes."
+        },
+        {
+            "term": "Cell Membrane (Utando wa Seli)",
+            "definition": "The gatekeeper that controls what enters and leaves the cell. Protects the cell like a security guard at a gate."
+        },
+        {
+            "term": "Cell Wall (Ukuta wa Seli)",
+            "definition": "Only in PLANT cells! Gives plants their rigid shape. Made of cellulose. Why trees stand strong!"
+        },
+        {
+            "term": "Chloroplasts (Kloroplasti)",
+            "definition": "Only in PLANT cells! Contains chlorophyll (green color). Makes food using sunlight through photosynthesis. Why leaves are green!"
+        },
+        {
+            "term": "Vacuole (Kisukuku)",
+            "definition": "Storage compartment. Plants have ONE large vacuole, animals have MANY small vacuoles. Stores water, food, and waste."
+        },
+        {
+            "term": "Photosynthesis",
+            "definition": "The process where plant cells use sunlight, water, and CO2 to make food (glucose). Happens in chloroplasts."
+        },
+        {
+            "term": "Cellular Respiration",
+            "definition": "The process where cells break down glucose to make energy (ATP). Happens in mitochondria in both plant and animal cells."
+        }
+    ],
     "estimatedReadTime": "7 minutes",
     "difficulty": "Beginner",
     "ageRange": "12-14 years",
