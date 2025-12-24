@@ -7,13 +7,14 @@ import Markdown from 'react-native-markdown-display';
 import { Button } from '../src/components/Button';
 import FlashcardViewer, { Flashcard } from '../src/components/FlashcardViewer';
 import QuizViewer, { QuizQuestion } from '../src/components/QuizViewer';
+import ImageViewer from '../src/components/ImageViewer';
 import { useTheme } from '../src/contexts/ThemeContext';
 import { useFontSize } from '../src/contexts/FontSizeContext';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { getAvailableVoices } from '../src/ai';
 import { speakText, stopSpeech, isSpeaking } from '../src/ai/adapt/audioConvert';
 import type { Voice } from '../src/ai/types';
-import { SAMPLE_DOCUMENTS, SampleDocument } from '../src/services/sampleDocuments';
+import { SAMPLE_DOCUMENTS, SampleDocument, VisualAid } from '../src/services/sampleDocuments';
 
 type TabType = 'text' | 'audio' | 'visuals' | 'study';
 
@@ -34,6 +35,7 @@ export default function ResultsScreen() {
   const [sampleData, setSampleData] = useState<SampleDocument | null>(null);
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+  const [visualAids, setVisualAids] = useState<VisualAid[]>([]);
 
   // Use params or fallback to placeholder data
   const simplifiedText = sampleData?.content.simplifiedText || params.text || "This is a simplified summary of the document. It uses simple words and clear sentence structures to make reading easier.";
@@ -66,6 +68,10 @@ export default function ResultsScreen() {
         // Load quiz questions from sample
         if (sample.content.quiz) {
           setQuizQuestions(sample.content.quiz);
+        }
+        // Load visual aids from sample
+        if (sample.content.visualAids) {
+          setVisualAids(sample.content.visualAids);
         }
       }
     }
@@ -440,15 +446,26 @@ export default function ResultsScreen() {
 
         {/* Visuals Tab */}
         {activeTab === 'visuals' && (
-          <View style={styles.placeholderContainer}>
-            <Text style={styles.placeholderIcon}>📊</Text>
-            <Text style={styles.placeholderTitle}>Visual Aids</Text>
-            <Text style={styles.placeholderText}>
-              Generated diagrams, mind maps, and infographics will appear here.
-            </Text>
-            <Text style={styles.placeholderSubtext}>
-              This feature displays AI-generated visual aids to help you understand the content better.
-            </Text>
+          <View style={{ flex: 1 }}>
+            {visualAids.length > 0 ? (
+              <ImageViewer 
+                visualAids={visualAids} 
+                subject={sampleData?.subject || 'Visual Aids'} 
+              />
+            ) : (
+              <View style={styles.placeholderContainer}>
+                <Text style={styles.placeholderIcon}>📊</Text>
+                <Text style={[styles.placeholderTitle, { color: colors.text, fontSize: getScaledSize(24) }]}>
+                  No Visual Aids
+                </Text>
+                <Text style={[styles.placeholderText, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
+                  Visual aids are not available for this content yet.
+                </Text>
+                <Text style={[styles.placeholderSubtext, { color: colors.textSecondary, fontSize: getScaledSize(14) }]}>
+                  Try selecting a sample document from the home screen to see diagrams, infographics, and visual learning aids!
+                </Text>
+              </View>
+            )}
           </View>
         )}
 
