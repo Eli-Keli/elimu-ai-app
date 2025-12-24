@@ -129,7 +129,7 @@ export async function saveMarkdownFile(
  * Share image file
  */
 export async function shareImage(
-  imageUri: string,
+  imageUri: string | number,
   title?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -138,6 +138,14 @@ export async function shareImage(
       return {
         success: false,
         error: 'Sharing is not available on this device',
+      };
+    }
+
+    // Handle bundled assets (from require()) which are numbers
+    if (typeof imageUri === 'number') {
+      return {
+        success: false,
+        error: 'Cannot share bundled assets. Please use images from your device or a URL.',
       };
     }
 
@@ -160,7 +168,7 @@ export async function shareImage(
  * Save image to device (via share sheet - user can save to Photos)
  */
 export async function saveImage(
-  imageUri: string,
+  imageUri: string | number,
   filename?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -172,17 +180,23 @@ export async function saveImage(
       };
     }
 
-    // If it's a bundled asset (require()), we need to copy it to cache first
-    let sharableUri = imageUri;
-
-    // Check if it's a local file or needs to be copied
-    if (!imageUri.startsWith('file://')) {
-      // It's likely a bundled asset, we'll share it directly
-      // Note: Bundled assets from require() are already accessible
-      sharableUri = imageUri;
+    // Handle bundled assets (from require()) which are numbers
+    if (typeof imageUri === 'number') {
+      return {
+        success: false,
+        error: 'Cannot save bundled assets. Please use images from your device or a URL.',
+      };
     }
 
-    await Sharing.shareAsync(sharableUri, {
+    // Check if imageUri is defined
+    if (!imageUri) {
+      return {
+        success: false,
+        error: 'Image URI is not available',
+      };
+    }
+
+    await Sharing.shareAsync(imageUri, {
       mimeType: 'image/png',
       dialogTitle: filename || 'Save Image',
     });
