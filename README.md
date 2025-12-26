@@ -1,205 +1,264 @@
-# 📘 Elimu AI — Accessible Education Assistant
+# 🎓 Elimu AI - Accessible Education for All
 
-**Elimu AI** is a modular, accessibility-first learning companion designed to make educational content universally consumable. Built with **Expo** and **React Native**, it empowers learners—especially persons with disabilities (PWDs) by instantly transforming complex study materials into accessible formats: simplified summaries, audio explanations, and visual aids.
+> **Part of the AbiliLife Learn Ecosystem**  
+> Making complex educational content accessible for every learner
 
-> **Vision:** Elimu AI is designed to eventually function as a core micro-service within the **AbiliLife Learn Ecosystem**, providing an adaptive learning layer for the broader [AbiliLife](https://github.com/AbiliLife/AbiliLife-frontend) super-app.
-
----
-
-## Key Features
-
-*   **Smart Document Processing** ✅
-    *   Upload PDFs or images (Lecture notes, textbooks, handouts)
-    *   Real text extraction powered by Gemini multimodal API
-    *   Automatic OCR for scanned documents and images
-    *   Supports PDF, JPG, PNG, WebP, HEIC, HEIF formats (up to 50MB)
-*   **Adaptive AI Pipeline**
-    *   **Extract:** ✅ Real text extraction from documents using Gemini multimodal API with automatic OCR
-    *   **Simplify:** ✅ Converts complex academic language into plain, easy-to-understand text
-    *   **Audify:** ✅ Real TTS audio playback with voice selection and speed control (expo-speech)
-    *   **Visualize:** ✅ Creates descriptions for visual learning aids (infographics, timelines)
-*   **Accessibility First**
-    *   High-contrast UI foundation.
-    *   Screen-reader optimized structure.
-    *   Planned support for dyslexia-friendly typefaces.
-*   **Cross-Platform**
-    *   Native performance on iOS and Android via Expo.
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Expo SDK 54](https://img.shields.io/badge/Expo-SDK%2054-000020.svg?style=flat&logo=expo&logoColor=white)](https://expo.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6.svg?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Google Gemini](https://img.shields.io/badge/Google-Gemini%20API-4285F4.svg?style=flat&logo=google&logoColor=white)](https://ai.google.dev/)
 
 ---
 
-## 🏗️ Architecture
+## 🌟 Vision
 
-The project follows a modular, scalable structure separating UI, state, and the internal AI logic.
+Elimu AI is designed as the **core learning micro-service** for **[AbiliLife](https://github.com/AbiliLife/AbiliLife-frontend)** - an early-stage startup building Africa's first super-app for persons with disabilities (PWDs).
 
-```text
-elimu-ai-app/
-├── app/                     # Expo Router Pages
-│   ├── _layout.tsx          # Root layout & navigation
-│   ├── index.tsx            # Home/Welcome screen
-│   ├── upload.tsx           # Document picker interface
-│   ├── reader.tsx           # Document viewer & AI trigger
-│   ├── results.tsx          # AI output display
-│   └── settings.tsx         # Accessibility preferences
-├── src/
-│   ├── ai/                  # AI Processing Module
-│   │   ├── index.ts         # Main orchestrator (processDocument)
-│   │   ├── extract/         # Text extraction logic
-│   │   │   └── extractText.ts
-│   │   ├── adapt/           # Content adaptation logic
-│   │   │   ├── simplifyText.ts
-│   │   │   ├── audioConvert.ts
-│   │   │   └── visualAids.ts
-│   │   └── models/          # LLM Integration (Gemini)
-│   │       └── gemini.ts
-│   ├── components/          # Reusable UI components
-│   │   └── Button.tsx
-│   └── theme/               # Design system tokens
-│       └── colors.ts
-└── package.json
+**The AbiliLife Learn Module will empower:**
+- 🎓 Students with learning disabilities
+- 👁️ Visual/hearing impaired learners  
+- 🧠 Anyone who needs content simplified
+- 🏫 Schools serving diverse learning needs
+
+**Elimu AI is the killer product** that makes AbiliLife Learn indispensable - transforming education accessibility across Kenya and beyond.
+
+---
+
+## ✨ What It Does (5 Second Pitch)
+
+**Upload a PDF or image → Get simplified text + audio narration + visual aids + study tools**
+
+**Perfect for:**
+- 📚 Textbooks & lecture notes → Easy-to-understand summaries
+- 🧠 Complex topics → Grade-appropriate explanations (CBC-aligned)
+- 🔊 Reading difficulties → Listen instead of reading
+- 📊 Visual learners → Diagrams, infographics, timelines
+- 🎯 Exam prep → Interactive flashcards & quizzes
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Clone & Install
+git clone https://github.com/Eli-Keli/elimu-ai-app
+cd elimu-ai-app
+npm install
+
+# 2. Add Your Gemini API Key
+echo "EXPO_PUBLIC_GEMINI_API_KEY=your_key_here" > .env
+
+# 3. Run on Expo Go
+npx expo start
 ```
 
----
-
-## AI Pipeline
-
-The core of Elimu AI is the `src/ai` module, which orchestrates the transformation of content.
-
-**Current Status:** *Phase 3 Complete - Real Audio Playback (v0.2)*
-
-1.  **Orchestration (`src/ai/index.ts`)**
-    *   The `processDocument(uri)` function serves as the main entry point.
-    *   It manages the flow of data between extraction, adaptation, and generation steps.
-
-2.  **Extraction (`src/ai/extract/`)** ✅ **PRODUCTION-READY**
-    *   `extractText.ts`: Real text extraction using Gemini multimodal API with automatic OCR support for PDFs and images.
-
-3.  **Adaptation (`src/ai/adapt/`)** ✅ **PRODUCTION-READY**
-    *   `simplifyText.ts`: Real text simplification using Gemini 2.5 Flash model.
-    *   `audioConvert.ts`: Real TTS audio playback using expo-speech with voice selection and speed control.
-    *   `visualAids.ts`: Real visual aids generation using Gemini API.
-
-3.  **Adaptation (`src/ai/adapt/`)**
-    *   `simplifyText.ts`: Rewrites content for cognitive accessibility.
-    *   `audioConvert.ts`: Prepares text-to-speech synthesis or generates audio file references.
-    *   `visualAids.ts`: Generates prompts for diagrams or visual summaries.
-
-4.  **Models (`src/ai/models/`)**
-    *   `gemini.ts`: Interface for Google's Gemini 1.5 Flash model (to be integrated).
+**Get Free API Key:** [Google AI Studio](https://makersuite.google.com/app/apikey)  
+**First-time setup:** Takes ~2 minutes | **Free tier:** 60 requests/minute
 
 ---
 
-## Tech Stack
+## Features (Phase 4 Complete - December 2025)
 
-*   **Framework:** React Native (Expo Managed Workflow)
-*   **Navigation:** Expo Router
-*   **Language:** TypeScript
-*   **Styling:** StyleSheet (Native) with Themed Constants
-*   **AI/LLM:** Google Gemini CLI (Planned integration)
+### 🎯 Core Functionality
+- ✅ **PDF/Image Upload** - Supports PDF, JPG, PNG, WebP, HEIC (up to 50MB)
+- ✅ **AI Text Extraction** - Gemini multimodal API with automatic OCR
+- ✅ **Smart Simplification** - Grade-level targeting (6th-12th grade)
+- ✅ **Audio Narration** - 100+ system voices, speed control (0.5x-2.0x)
+- ✅ **Visual Aids** - Auto-generated diagrams, timelines, infographics
+- ✅ **Kenya CBC Aligned** - 5 sample documents matching national curriculum
+
+### 💎 User Experience
+- ✅ **Onboarding Flow** - 3-screen intro for first-time users
+- ✅ **Splash Screen** - Professional animated intro
+- ✅ **Dark Mode** - Full light/dark theme support
+- ✅ **Font Controls** - 3 size options (Small/Medium/Large)
+- ✅ **Sample Documents** - Try without uploading (Biology, Math, History, Chemistry, Geography)
+- ✅ **Recent History** - Quick access to last 5 processed documents
+- ✅ **Processing Animation** - Step-by-step progress feedback
+
+### 📖 Study Tools
+- ✅ **Interactive Flashcards** - 3D flip animation, swipe navigation
+- ✅ **Multiple Choice Quizzes** - Instant feedback, score tracking
+- ✅ **Key Takeaways** - Auto-generated bullet point summaries
+- ✅ **Save/Share** - Export to Files, Photos, Messages, WhatsApp
+
+### ♿ Accessibility
+- ✅ **Voice Filtering** - Filter by language (English, Swahili, French)
+- ✅ **High Contrast Mode** - Enhanced readability
+- ✅ **Adjustable Fonts** - Real-time text scaling
+- ✅ **Persistent Settings** - Preferences saved across sessions
+- ✅ **Screen Reader Support** - Accessibility labels throughout
 
 ---
 
-## 📦 Installation & Setup
+## 🏗️ Tech Stack
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/Eli-Keli/elimu-ai-app.git
-    cd elimu-ai-app
-    ```
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| **Frontend** | React Native + Expo SDK 52 | Cross-platform mobile framework |
+| **Language** | TypeScript 5.9 | Type safety & developer experience |
+| **AI/ML** | Google Gemini 2.5 Flash | Multimodal API (text, images, OCR) |
+| **Audio** | expo-speech | Device TTS (offline, 100+ voices) |
+| **State** | React Context API | Theme, font size, language preferences |
+| **Storage** | AsyncStorage | User settings, document history |
+| **Animation** | react-native-reanimated | 3D flips, smooth transitions |
+| **Markdown** | react-native-markdown-display | Rich text formatting |
+| **Sharing** | expo-sharing | System share sheet integration |
 
-2.  **Install dependencies**
-    ```bash
-    npm install
-    ```
+**Why This Stack?**
+- ✅ **Expo** - Cross-platform with hot reload, no Xcode/Android Studio needed for development
+- ✅ **Gemini AI** - Free tier (60 req/min), multimodal capabilities, OCR built-in
+- ✅ **Device TTS** - Offline audio, zero API costs, 100+ voices
+- ✅ **TypeScript** - Catch bugs before runtime, better IDE support
 
-3.  **Configure Gemini API (Required for AI features)**
-    ```bash
-    # Create .env file from template
-    cp .env.example .env
-    
-    # Get your API key from: https://makersuite.google.com/app/apikey
-    # Add to .env file:
-    EXPO_PUBLIC_GEMINI_API_KEY=your_actual_api_key_here
-    ```
-
-4.  **Test Gemini Integration (Optional)**
-    ```bash
-    npx ts-node test-gemini.ts
-    ```
-
-5.  **Start the development server**
-    ```bash
-    npx expo start
-    ```
-
-6.  **Run on device**
-    *   Download the **Expo Go** app on iOS or Android.
-    *   Scan the QR code shown in the terminal.
+---
 
 ## 📚 Documentation
 
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Complete system design and module breakdown
-- **[ROADMAP_V0.2.md](docs/ROADMAP_V0.2.md)** - Actionable next steps for v0.2 development
-- **[QUICK_REFERENCE.md](docs/QUICK_REFERENCE.md)** - Developer quick reference guide
-- **[ANALYSIS_SUMMARY.md](docs/ANALYSIS_SUMMARY.md)** - Project analysis and improvements summary
-- **[DEPENDENCIES.md](docs/DEPENDENCIES.md)** - Official packages and documentation links
-- **[PHASE_2_PLANNING.md](docs/PHASE_2_PLANNING.md)** - Phase 2 decision analysis (Gemini vs native libraries)
-- **[PHASE_2_IMPLEMENTATION.md](docs/PHASE_2_IMPLEMENTATION.md)** - Phase 2 completion report and test results
-- **[PHASE_3_PLANNING.md](docs/PHASE_3_PLANNING.md)** - Phase 3 decision analysis (expo-speech TTS)
-- **[PHASE_3_IMPLEMENTATION.md](docs/PHASE_3_IMPLEMENTATION.md)** - Phase 3 completion report and test results
-- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Step-by-step testing instructions
+### For Developers
+- **[Architecture Guide](docs/ARCHITECTURE.md)** - System design, patterns, component structure
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - Common commands, APIs, troubleshooting
+- **[Dependencies](docs/DEPENDENCIES.md)** - Full package list with official documentation links
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute (Phase 5+)
+
+### Implementation History
+- **[Phase 1: Gemini API Integration](docs/PHASE_1_COMPLETE.md)** - Nov 2025
+- **[Phase 2: PDF/Image Text Extraction](docs/PHASE_2_IMPLEMENTATION.md)** - Dec 2-16, 2025
+- **[Phase 3: Audio Playback (TTS)](docs/PHASE_3_IMPLEMENTATION.md)** - Dec 16-18, 2025
+- **[Phase 4: UI/UX Polish & Study Tools](docs/PHASE_4_IMPLEMENTATION.md)** - Dec 19-26, 2025 ✅ **CURRENT**
+- **[Phase 5: Roadmap & Next Features](docs/PHASE_5_TODO.md)** - Planned for Jan 2026
+
+### Feature Guides
+- **[Study Tools Guide](docs/STUDY_TOOLS_GUIDE.md)** - How to use flashcards & quizzes
+- **[CBC Curriculum Alignment](docs/CBC_ALIGNMENT_SUMMARY.md)** - Kenya education standards
 
 ---
 
 ## 🗺️ Roadmap
 
-### Phase A: Foundation (✅ Completed)
-*   [x] Project initialization (Expo + TypeScript).
-*   [x] Basic navigation routing (Home -> Upload -> Reader).
-*   [x] UI scaffolding.
+### ✅ Phase 4 Complete (December 2025)
+- Modern UI with onboarding & dark mode
+- Interactive study tools (flashcards, quizzes)
+- Full accessibility support (font controls, voice filtering)
+- Save/share functionality
+- **80% feature completion** (16/20 planned features)
 
-### Phase B: AI Scaffolding (✅ Completed)
-*   [x] Define AI module architecture (`src/ai`).
-*   [x] Implement production-ready stub functions with types.
-*   [x] Add comprehensive error handling and logging.
-*   [x] Create TypeScript interfaces for entire pipeline.
-*   [x] Upgrade all AI functions with async patterns.
-*   [x] Connect reader screen to results with state management.
+### 🎯 Phase 5 (January 2026)
+- 📝 Personal notes feature (markdown support)
+- 🔥 Study streak tracking (gamification)
+- 📊 Analytics integration (Firebase)
+- 📸 App Store preparation (screenshots, demo video)
+- ♿ Accessibility audit (VoiceOver, TalkBack testing)
 
-### Phase C: Intelligence Integration (🚀 In Progress - v0.2)
-*   [x] **Phase 1 Complete**: Real Gemini API integration with retry logic
-*   [x] Text simplification with Gemini 2.5 Flash
-*   [x] Image generation with Gemini Nano Banana
-*   [x] Comprehensive error handling and logging
-*   [x] **Phase 2 Complete**: Real PDF/image text extraction with Gemini multimodal API
-*   [x] OCR support for scanned documents and images
-*   [x] Support for PDF, JPG, PNG, WebP, HEIC, HEIF formats
-*   [x] React Native compatible implementation (works on Expo Go)
-*   [x] **Phase 3 Complete**: Real audio generation with expo-speech TTS
-*   [x] Voice selection (473 voices on Android, 68 on iOS)
-*   [x] Speed control (0.5x - 2.0x)
-*   [x] Play/stop controls with state management
-*   [x] Free and offline (device TTS)
-*   [ ] **Phase 4 (Next)**: UI polish and save/share features
-*   [ ] **Phase 5**: Complete image generation pipeline
-*   [ ] **Phase 6**: Full integration testing
-*   [ ] **Phase 7**: Final documentation and polish
+### 🔮 Phase 6+ (2026)
+- ☁️ Cloud sync across devices
+- 👥 Collaborative study groups
+- 🤖 AI tutor chat assistant
+- 📷 OCR camera scanning (live text extraction)
+- 🌍 Multi-language content support (Swahili, French)
+- 👩‍🏫 Teacher dashboard (track student progress)
+- 🏢 **AbiliLife Learn Integration** (super-app ecosystem)
 
-**See [`docs/ROADMAP_V0.2.md`](docs/ROADMAP_V0.2.md) for detailed implementation plan.**  
-**See [`docs/PHASE_1_COMPLETE.md`](docs/PHASE_1_COMPLETE.md) for Phase 1 completion report.**  
-**See [`docs/PHASE_2_IMPLEMENTATION.md`](docs/PHASE_2_IMPLEMENTATION.md) for Phase 2 completion report.**  
-**See [`docs/PHASE_3_IMPLEMENTATION.md`](docs/PHASE_3_IMPLEMENTATION.md) for Phase 3 completion report.**
+---
 
-### Phase D: Ecosystem Integration
-*   [ ] Align UI with AbiliLife design system.
-*   [ ] Prepare module for integration into AbiliLife Learn.
+## 🌍 AbiliLife Integration Vision
+
+Elimu AI will serve as the **adaptive learning engine** within the broader AbiliLife ecosystem:
+
+```
+AbiliLife Super App (Vision)
+├── AbiliLife Mobility (Accessible Transport)
+├── AbiliLife Care (Medical Support & Wellness)
+├── AbiliLife Access (Assistive Devices)
+├── AbiliLife Work (Employment & Income Generation)
+└── AbiliLife Learn (Education & Skills) ⭐
+    ├── Elimu AI (Content Accessibility) ← YOU ARE HERE
+    ├── Course Library (Video lessons, tutorials)
+    ├── Peer Tutoring (Connect with mentors)
+    └── Skill Certification (Verified credentials)
+```
+
+**Integration Points:**
+- 🔗 Shared user profiles & accessibility preferences
+- 📈 Cross-module progress tracking
+- 🎨 Unified design system & navigation
+- 💬 Social features (share notes, study groups)
+- 🏆 Gamification (badges, streaks, leaderboards)
+
+**Why Elimu AI is the Killer Feature:**
+- First-to-market in accessible education tech in Kenya
+- Solves real pain points for PWDs in education
+- Scalable across all AbiliLife Learn content
+- Creates network effects (students share simplified content)
+
+---
+
+## 📊 Project Stats
+
+- **Development Time:** 1 month (November 26 - December 26, 2025)
+- **Total Commits:** 40+ feature commits
+- **Lines of Code:** 10,000+ (app + AI pipeline + docs)
+- **Components:** 15 reusable UI components
+- **Test Coverage:** Manual testing complete, unit tests planned (Phase 5)
+- **Status:** ✅ Production-ready core features
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions that advance accessible education technology!
-Please open an issue to discuss major changes or submit a Pull Request for fixes.
+This is currently a solo project as part of the AbiliLife startup journey. **Contributions welcome after Phase 5!**
+
+**Want to help?**
+- 🐛 Report bugs via [GitHub Issues](https://github.com/yourusername/elimu-ai-app/issues)
+- 💡 Suggest features or improvements
+- 📖 Improve documentation (translations, tutorials)
+- 🌍 Add support for your language (Swahili, French, Arabic planned)
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines (coming in Phase 5).
+
+---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+MIT License - See [LICENSE](LICENSE) for details.
+
+**TLDR:** Free to use, modify, and distribute. Attribution appreciated but not required.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Google Gemini API** - AI-powered multimodal content processing
+- **Expo Team** - Amazing React Native framework with great DX
+- **React Native Community** - Excellent open-source libraries
+- **Kenya CBC** - Curriculum alignment guidance for educational content
+- **AbiliLife Community** - Early testers and feedback providers
+
+---
+
+## 📧 Contact & Links
+
+**Project:** Elimu AI  
+**Parent Company:** AbiliLife (Early-Stage Startup)  
+**GitHub:** [@Eli-Keli](https://github.com/Eli-Keli)  
+**AbiliLife Repo:** [github.com/AbiliLife/AbiliLife-frontend](https://github.com/AbiliLife/AbiliLife-frontend)
+
+**Built with ❤️ for accessible education in Africa**
+
+---
+
+## 🎨 Visual Identity
+
+Logo and branding assets coming in Phase 5. See [docs/LOGO_PROMPTS.md](docs/LOGO_PROMPTS.md) for design concepts.
+
+**Brand Colors:**
+- Primary: `#5B47ED` (Education Purple)
+- Accent: `#FF6B9D` (Warm Pink)
+- Success: `#4CAF50` (Green)
+- Background: `#F8F9FE` (Soft Blue)
+
+---
+
+<div align="center">
+  <sub>Making education accessible, one document at a time. 🎓</sub>
+</div>
