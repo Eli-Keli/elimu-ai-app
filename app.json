@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "elimu-ai-app",
+    "name": "Elimu AI",
     "slug": "elimu-ai-app",
     "scheme": "elimu-ai-app",
     "version": "1.0.0",
@@ -17,6 +17,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.abililife.elimuai",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#5B47ED"
@@ -29,6 +30,12 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "312e52d3-1cb4-4af5-8c00-a15370fc892c"
+      }
+    }
   }
 }

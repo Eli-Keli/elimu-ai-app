@@ -6,6 +6,7 @@ import * as SplashScreenExpo from 'expo-splash-screen';
 import { ThemeProvider } from '../src/contexts/ThemeContext';
 import { FontSizeProvider } from '../src/contexts/FontSizeContext';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
+import { ErrorBoundary } from '../src/utils/ErrorBoundary';
 import { colors } from '../src/theme/colors';
 import SplashScreen from '../src/components/onboarding/SplashScreen';
 import OnboardingSlider from '../src/components/onboarding/OnboardingSlider';
@@ -73,12 +74,14 @@ function RootLayoutContent() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <FontSizeProvider>
-        <LanguageProvider>
-          <RootLayoutContent />
-        </LanguageProvider>
-      </FontSizeProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <FontSizeProvider>
+          <LanguageProvider>
+            <RootLayoutContent />
+          </LanguageProvider>
+        </FontSizeProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
