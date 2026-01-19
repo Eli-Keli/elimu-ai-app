@@ -112,7 +112,8 @@ export default function ResultsScreen() {
         await stopSpeech();
         setIsPlaying(false);
       } else {
-        // Start new playback
+        // Start new playback with selected voice
+        console.log(`[UI] Playing audio with voice: ${selectedVoice}, speed: ${speed}`);
         await speakText(simplifiedText, {
           voiceId: selectedVoice,
           voiceSpeed: speed,

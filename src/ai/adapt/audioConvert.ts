@@ -94,10 +94,10 @@ export async function speakText(
       },
     };
     
-    // DON'T auto-play - just prepare the audio
-    // Speech.speak(text, speechOptions); // REMOVED: Auto-play disabled
+    // Start TTS playback with the configured options
+    Speech.speak(text, speechOptions);
     
-    console.log(`[Audio] ✅ TTS audio prepared (${estimatedDuration.toFixed(1)}s estimated) - Ready for manual playback`);
+    console.log(`[Audio] ✅ TTS playback initiated (${estimatedDuration.toFixed(1)}s estimated) - Voice: ${config.voiceId || 'system-default'}`);
     
     return {
       audioUri: null, // No file generated (direct playback)
