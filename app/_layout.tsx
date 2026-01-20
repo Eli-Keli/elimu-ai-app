@@ -6,6 +6,7 @@ import * as SplashScreenExpo from 'expo-splash-screen';
 import { ThemeProvider } from '../src/contexts/ThemeContext';
 import { FontSizeProvider } from '../src/contexts/FontSizeContext';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
+import { NotesProvider } from '../src/contexts/NotesContext';
 import { ErrorBoundary } from '../src/utils/ErrorBoundary';
 import { colors } from '../src/theme/colors';
 import SplashScreen from '../src/components/onboarding/SplashScreen';
@@ -78,7 +79,9 @@ export default function RootLayout() {
       <ThemeProvider>
         <FontSizeProvider>
           <LanguageProvider>
-            <RootLayoutContent />
+            <NotesProvider>
+              <RootLayoutContent />
+            </NotesProvider>
           </LanguageProvider>
         </FontSizeProvider>
       </ThemeProvider>

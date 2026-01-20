@@ -11,11 +11,14 @@ import ImageViewer from '../src/components/ImageViewer';
 import { useTheme } from '../src/contexts/ThemeContext';
 import { useFontSize } from '../src/contexts/FontSizeContext';
 import { useLanguage } from '../src/contexts/LanguageContext';
+import { useNotes, Note } from '../src/contexts/NotesContext';
 import { getAvailableVoices } from '../src/ai';
 import { speakText, stopSpeech, isSpeaking } from '../src/ai/adapt/audioConvert';
 import type { Voice } from '../src/ai/types';
 import { SAMPLE_DOCUMENTS, SampleDocument, VisualAid } from '../src/services/sampleDocuments';
 import { saveCompleteDocument, shareSummary } from '../src/utils/shareUtils';
+import { NoteModal } from '../src/components/NoteModal';
+import { NotesList } from '../src/components/NotesList';
 
 type TabType = 'text' | 'audio' | 'visuals' | 'study';
 
@@ -37,6 +40,13 @@ export default function ResultsScreen() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
   const [visualAids, setVisualAids] = useState<VisualAid[]>([]);
+
+  // Notes state
+  const { addNote, updateNote, deleteNote, getNotesForDocument } = useNotes();
+  const [notesModalVisible, setNotesModalVisible] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const documentId = params.sampleId || 'default-doc';
+  const documentNotes = getNotesForDocument(documentId);
 
   // Use params or fallback to placeholder data
   const simplifiedText = sampleData?.content.simplifiedText || params.text || "This is a simplified summary of the document. It uses simple words and clear sentence structures to make reading easier.";
@@ -166,6 +176,37 @@ export default function ResultsScreen() {
       Alert.alert(t('results.saved'), 'Document has been saved successfully!');
     } else {
       Alert.alert('Save Failed', result.error || 'Unable to save document.');
+    }
+  };
+
+  // Note handlers
+  const handleAddNote = () => {
+    setEditingNote(null);
+    setNotesModalVisible(true);
+  };
+
+  const handleEditNote = (note: Note) => {
+    setEditingNote(note);
+    setNotesModalVisible(true);
+  };
+
+  const handleSaveNote = async (content: string) => {
+    try {
+      if (editingNote) {
+        await updateNote(editingNote.id, content);
+      } else {
+        await addNote(documentId, content);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save note. Please try again.');
+    }
+  };
+
+  const handleDeleteNote = async (id: string) => {
+    try {
+      await deleteNote(id);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete note. Please try again.');
     }
   };
 
@@ -373,6 +414,31 @@ export default function ResultsScreen() {
               <Markdown style={getMarkdownStyles()}>
                 {simplifiedText}
               </Markdown>
+            </View>
+
+            {/* Personal Notes Section */}
+            <View style={[styles.card, { backgroundColor: colors.card, marginTop: 20 }]}>
+              <View style={styles.notesHeader}>
+                <Text style={[styles.sectionTitle, { color: colors.text, fontSize: getScaledSize(18) }]}>
+                  💭 My Notes
+                </Text>
+                <TouchableOpacity
+                  style={[styles.addNoteButton, { backgroundColor: colors.primary }]}
+                  onPress={handleAddNote}
+                  accessibilityLabel="Add new note"
+                  accessibilityHint="Opens modal to write a note about this content"
+                >
+                  <Text style={[styles.addNoteButtonText, { fontSize: getScaledSize(14) }]}>
+                    + Add Note
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <NotesList
+                notes={documentNotes}
+                onEdit={handleEditNote}
+                onDelete={handleDeleteNote}
+              />
             </View>
 
             <View style={styles.actions}>
@@ -604,6 +670,15 @@ export default function ResultsScreen() {
           style={{ backgroundColor: '#757575' }}
         />
       </View>
+
+      {/* Notes Modal */}
+      <NoteModal
+        visible={notesModalVisible}
+        onClose={() => setNotesModalVisible(false)}
+        onSave={handleSaveNote}
+        initialContent={editingNote?.content || ''}
+        mode={editingNote ? 'edit' : 'add'}
+      />
     </View>
   );
 }
@@ -794,6 +869,24 @@ const styles = StyleSheet.create({
   actions: {
     gap: 10,
     marginTop: 20,
+  },
+  notesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontWeight: 'bold',
+  },
+  addNoteButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  addNoteButtonText: {
+    color: '#ffffff',
+    fontWeight: '600',
   },
   footer: {
     padding: 20,
