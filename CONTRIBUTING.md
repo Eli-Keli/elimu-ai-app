@@ -1,10 +1,10 @@
-# 🤝 Contributing to Elimu AI
+# Contributing to Elimu AI
 
-Thank you for your interest in contributing to Elimu AI! This project is part of the AbiliLife ecosystem and aims to make education accessible for all learners.
+Thank you for your interest in contributing to Elimu AI! This project is part of the [AbiliLife](https://github.com/AbiliLife/AbiliLife-frontend) ecosystem and aims to make education accessible for all learners.
 
 ---
 
-## 🌟 Current Status
+## CURRENT STATUS
 
 **Project Phase:** Phase 4 Complete (December 2025)  
 **Accepting Contributions:** Starting Phase 5 (January 2026)  
@@ -12,9 +12,9 @@ Thank you for your interest in contributing to Elimu AI! This project is part of
 
 ---
 
-## 🎯 Ways to Contribute
+## WAYS TO CONTRIBUTE
 
-### 1. 🐛 Report Bugs
+### 1. Report Bugs
 Found a bug? Please create an issue with:
 - Clear description of the problem
 - Steps to reproduce
@@ -22,27 +22,27 @@ Found a bug? Please create an issue with:
 - Screenshots (if applicable)
 - Device & OS version
 
-### 2. 💡 Suggest Features
+### 2. Suggest Features
 Have an idea? We'd love to hear it! Please:
 - Check existing issues first
 - Explain the use case
 - Describe how it helps PWDs or learners
 - Consider accessibility implications
 
-### 3. 📖 Improve Documentation
+### 3. Improve Documentation
 Help make our docs clearer:
 - Fix typos or unclear explanations
 - Add tutorials or guides
 - Translate docs to Swahili, or other languages
 - Create video walkthroughs
 
-### 4. 🌍 Add Translations
+### 4. Add Translations
 Help us reach more learners:
 - UI text translations
 - Sample document translations
 - Voice preference defaults for your language
 
-### 5. 🧪 Test & Provide Feedback
+### 5. Test & Provide Feedback
 - Test on your device (iOS/Android)
 - Try with assistive technologies (VoiceOver, TalkBack)
 - Report UX issues or confusion
@@ -50,7 +50,7 @@ Help us reach more learners:
 
 ---
 
-## 🚀 Getting Started
+## GETTING STARTED
 
 ### Prerequisites
 - Node.js 18+ and npm
@@ -83,15 +83,15 @@ git checkout -b feature/your-feature-name
 
 ---
 
-## 📝 Development Guidelines
+## DEVELOPMENT GUIDLINES
 
-### Code Style
+### A) Code Style
 - **TypeScript:** All new code must be TypeScript
 - **Formatting:** We use Prettier (run `npm run format`)
 - **Linting:** ESLint must pass (run `npm run lint`)
 - **Naming:** Use camelCase for variables, PascalCase for components
 
-### Component Guidelines
+### B) Component Guidelines
 ```typescript
 // ✅ Good: Typed props, clear names
 interface ButtonProps {
@@ -110,15 +110,15 @@ export function Btn(props: any) {
 }
 ```
 
-### Accessibility Requirements
+### C) Accessibility Requirements
 Every contribution MUST consider accessibility:
-- ✅ All interactive elements have accessibility labels
-- ✅ Color contrast ratio ≥ 4.5:1 (WCAG AA)
-- ✅ Support for screen readers (VoiceOver, TalkBack)
-- ✅ Keyboard navigation (where applicable)
-- ✅ Font scaling respects user preferences
+- All interactive elements have accessibility labels
+- Color contrast ratio ≥ 4.5:1 (WCAG AA)
+- Support for screen readers (VoiceOver, TalkBack)
+- Keyboard navigation (where applicable)
+- Font scaling respects user preferences
 
-### Commit Messages
+### D) Commit Messages
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```bash
 feat: add personal notes feature
@@ -131,9 +131,9 @@ chore: update dependencies
 
 ---
 
-## 🧪 Testing
+## TESTING
 
-### Manual Testing Checklist
+### A) Manual Testing Checklist
 Before submitting a PR, test:
 - [ ] Works on iOS (simulator or device)
 - [ ] Works on Android (emulator or device)
@@ -143,7 +143,7 @@ Before submitting a PR, test:
 - [ ] No console errors or warnings
 - [ ] Handles errors gracefully (network issues, invalid input)
 
-### Unit Tests (Coming in Phase 5)
+### B) Unit Tests (Coming in Phase 5)
 ```bash
 npm run test
 npm run test:watch
@@ -152,9 +152,9 @@ npm run test:coverage
 
 ---
 
-## 📤 Submitting a Pull Request
+## SUBMITTING A PULL REQUEST
 
-### PR Checklist
+### A) PR Checklist
 - [ ] Code follows style guidelines
 - [ ] Commits follow conventional commit format
 - [ ] All tests pass
@@ -163,7 +163,7 @@ npm run test:coverage
 - [ ] PR description explains changes clearly
 - [ ] Screenshots included (for UI changes)
 
-### PR Template
+### B) PR Template
 ```markdown
 ## Description
 Brief summary of changes
@@ -191,7 +191,7 @@ How does this impact accessibility?
 
 ---
 
-## 🔍 Code Review Process
+## CODE REVIEW PROCESS
 
 1. **Automated Checks:** CI/CD runs linting, type checking, tests
 2. **Maintainer Review:** I'll review within 2-3 days
@@ -201,25 +201,25 @@ How does this impact accessibility?
 
 ---
 
-## 🎓 Learning Resources
+## LEARNING RESOURCES
 
-### React Native & Expo
+### 1. React Native & Expo
 - [Expo Documentation](https://docs.expo.dev/)
 - [React Native Docs](https://reactnative.dev/docs/getting-started)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 
-### Accessibility
+### 2. Accessibility
 - [React Native Accessibility](https://reactnative.dev/docs/accessibility)
 - [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [Expo Accessibility](https://docs.expo.dev/guides/accessibility/)
 
-### Google Gemini AI
+### 3. Google Gemini AI
 - [Gemini API Docs](https://ai.google.dev/gemini-api/docs)
 - [Multimodal Guide](https://ai.google.dev/gemini-api/docs/document-processing)
 
 ---
 
-## 🌍 Community Guidelines
+## COMMUNITY GUIDELINES
 
 ### Code of Conduct
 - Be respectful and inclusive
@@ -235,21 +235,21 @@ How does this impact accessibility?
 
 ---
 
-## 📊 Contribution Types
+## CONTRIBUTION TYPES
 
 We value all contributions:
 
 | Type | Examples | Recognition |
 |------|----------|-------------|
-| 🐛 Bug Fixes | Fix crashes, UI issues | Listed in release notes |
-| ✨ Features | New study tools, integrations | Listed in CONTRIBUTORS.md |
-| 📖 Docs | Guides, translations | Mentioned in docs |
-| 🧪 Testing | Report bugs, test PRs | Thank you in issues |
-| 💡 Ideas | Feature suggestions | Credited in implementation |
+| Bug Fixes | Fix crashes, UI issues | Listed in release notes |
+| Features | New study tools, integrations | Listed in CONTRIBUTORS.md |
+| Docs | Guides, translations | Mentioned in docs |
+| Testing | Report bugs, test PRs | Thank you in issues |
+| Ideas | Feature suggestions | Credited in implementation |
 
 ---
 
-## 🎯 Priority Areas (Phase 5)
+## PRIORITY AREAS (Phase 5)
 
 Need help with:
 1. **Personal Notes Feature** - Rich text editor integration
@@ -264,7 +264,7 @@ See [docs/PHASE_5_TODO.md](docs/PHASE_5_TODO.md) for details.
 
 ---
 
-## 🙏 Recognition
+## RECOGNITION 
 
 All contributors will be:
 - Listed in CONTRIBUTORS.md
@@ -276,7 +276,7 @@ All contributors will be:
 
 ---
 
-## 📧 Questions?
+## QESTIONS?
 
 - **Technical:** Open a GitHub Discussion
 - **Security:** Email muthokaelikeli@gmail.com / abililifekenya@gmail.com (when available)
@@ -284,12 +284,12 @@ All contributors will be:
 
 ---
 
-## 📄 License
+## LICENSE
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
 
 ---
 
 <div align="center">
-  <sub>Thank you for helping make education accessible for all! 🎓</sub>
+  <sub>Thank you for helping make education accessible for all!</sub>
 </div>
