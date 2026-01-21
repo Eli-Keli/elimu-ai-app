@@ -6,6 +6,8 @@ import { Button } from '../src/components/Button';
 import { useTheme } from '../src/contexts/ThemeContext';
 import { useFontSize } from '../src/contexts/FontSizeContext';
 import { useLanguage } from '../src/contexts/LanguageContext';
+import { useStreak } from '../src/contexts/StreakContext';
+import { StreakBadge } from '../src/components/StreakBadge';
 import { SAMPLE_DOCUMENTS } from '../src/services/sampleDocuments';
 
 const { width } = Dimensions.get('window');
@@ -22,6 +24,7 @@ export default function HomeScreen() {
   const { colors } = useTheme();
   const { getScaledSize } = useFontSize();
   const { t } = useLanguage();
+  const { streakData } = useStreak();
   const [recentDocs, setRecentDocs] = useState<RecentDocument[]>([]);
   const [learningTip, setLearningTip] = useState('');
 
@@ -63,12 +66,19 @@ export default function HomeScreen() {
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.greeting, { color: colors.text, fontSize: getScaledSize(28) }]}>
-          {t('home.greeting')}
-        </Text>
-        <Text style={[styles.title, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
-          {t('home.subtitle')}
-        </Text>
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={[styles.greeting, { color: colors.text, fontSize: getScaledSize(28) }]}>
+              {t('home.greeting')}
+            </Text>
+            <Text style={[styles.title, { color: colors.textSecondary, fontSize: getScaledSize(16) }]}>
+              {t('home.subtitle')}
+            </Text>
+          </View>
+          {streakData.currentStreak > 0 && (
+            <StreakBadge onPress={() => router.push('/results')} />
+          )}
+        </View>
       </View>
 
       {/* Learning Tip */}
@@ -171,6 +181,11 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     paddingTop: 10,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   greeting: {
     fontSize: 24,

@@ -7,6 +7,7 @@ import { ThemeProvider } from '../src/contexts/ThemeContext';
 import { FontSizeProvider } from '../src/contexts/FontSizeContext';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
 import { NotesProvider } from '../src/contexts/NotesContext';
+import { StreakProvider } from '../src/contexts/StreakContext';
 import { ErrorBoundary } from '../src/utils/ErrorBoundary';
 import { colors } from '../src/theme/colors';
 import SplashScreen from '../src/components/onboarding/SplashScreen';
@@ -80,7 +81,9 @@ export default function RootLayout() {
         <FontSizeProvider>
           <LanguageProvider>
             <NotesProvider>
-              <RootLayoutContent />
+              <StreakProvider>
+                <RootLayoutContent />
+              </StreakProvider>
             </NotesProvider>
           </LanguageProvider>
         </FontSizeProvider>

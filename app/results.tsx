@@ -12,6 +12,7 @@ import { useTheme } from '../src/contexts/ThemeContext';
 import { useFontSize } from '../src/contexts/FontSizeContext';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useNotes, Note } from '../src/contexts/NotesContext';
+import { useStreak } from '../src/contexts/StreakContext';
 import { getAvailableVoices } from '../src/ai';
 import { speakText, stopSpeech, isSpeaking } from '../src/ai/adapt/audioConvert';
 import type { Voice } from '../src/ai/types';
@@ -27,6 +28,7 @@ export default function ResultsScreen() {
   const { colors } = useTheme();
   const { getScaledSize, getFontMultiplier } = useFontSize();
   const { t } = useLanguage();
+  const { recordStudySession } = useStreak();
   
   const params = useLocalSearchParams<{
     text?: string;
@@ -84,9 +86,14 @@ export default function ResultsScreen() {
         if (sample.content.visualAids) {
           setVisualAids(sample.content.visualAids);
         }
+        
+        // Record study session when user views a document
+        recordStudySession().catch(error => {
+          console.error('[Results] Failed to record study session:', error);
+        });
       }
     }
-  }, [params.sampleId]);
+  }, [params.sampleId, recordStudySession]);
 
   // Load available voices on mount
   useEffect(() => {
